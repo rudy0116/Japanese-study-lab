@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -25,11 +26,20 @@ export function SchoolCard({
   return (
     <Card className="group overflow-hidden transition-shadow hover:shadow-lg">
       <CardContent className="p-0">
-        {/* Image placeholder */}
-        <div className="relative h-48 bg-gradient-to-br from-primary/10 to-primary/5">
-          <div className="absolute inset-0 flex items-center justify-center text-4xl font-bold text-primary/20">
-            {school.nameJa?.charAt(0)}
-          </div>
+        <div className="relative h-48 overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5">
+          {school.coverImage ? (
+            <Image
+              src={school.coverImage}
+              alt={school.nameZh}
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center text-4xl font-bold text-primary/20">
+              {school.nameJa?.charAt(0)}
+            </div>
+          )}
           {school.isFeatured && (
             <Badge className="absolute left-3 top-3 bg-primary">
               {t("featured")}

@@ -53,6 +53,8 @@ export const schools = pgTable("schools", {
   isPublished: boolean("is_published").default(false),
   isFeatured: boolean("is_featured").default(false),
 
+  coverImage: text("cover_image"),
+
   website: text(),
   phone: text(),
   email: text(),

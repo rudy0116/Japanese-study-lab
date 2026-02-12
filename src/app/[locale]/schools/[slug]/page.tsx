@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 import { getSchoolBySlug, getAllPublishedSchools } from "@/lib/queries/schools";
 import { FeeBreakdownTable } from "@/components/school/fee-breakdown-table";
@@ -85,6 +86,21 @@ export default async function SchoolDetailPage({
           <span className="mx-2">/</span>
           <span>{school.nameZh}</span>
         </nav>
+
+        {/* Cover image */}
+        {school.coverImage && (
+          <div className="relative mb-8 h-48 overflow-hidden rounded-xl sm:h-64 lg:h-80">
+            <Image
+              src={school.coverImage}
+              alt={school.nameZh}
+              fill
+              className="object-cover"
+              sizes="(max-width: 1280px) 100vw, 1280px"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+          </div>
+        )}
 
         {/* Header */}
         <div className="mb-8">
