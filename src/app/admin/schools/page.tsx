@@ -6,6 +6,7 @@ import { schools } from "@/lib/db/schema";
 import { desc } from "drizzle-orm";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { PublishSchoolButton } from "@/components/admin/publish-school-button";
 import {
   Table,
   TableBody,
@@ -72,7 +73,10 @@ export default async function AdminSchoolsPage() {
                     {school.isPublished ? "已发布" : "草稿"}
                   </Badge>
                 </TableCell>
-                <TableCell>
+                <TableCell className="flex items-center gap-2">
+                  {!school.isPublished && (
+                    <PublishSchoolButton schoolId={school.id} />
+                  )}
                   <Link
                     href={`/admin/schools/${school.id}`}
                     className="text-sm text-primary hover:underline"

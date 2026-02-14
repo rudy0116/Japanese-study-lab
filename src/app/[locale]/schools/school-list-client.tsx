@@ -72,10 +72,11 @@ export function SchoolListClient({
         </div>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {schools.map((school) => (
+          {schools.map((school, index) => (
             <SchoolCard
               key={school.id}
               school={school}
+              index={index}
               onCompareToggle={toggleCompare}
               isInComparison={comparedSlugs.includes(school.slug)}
             />
