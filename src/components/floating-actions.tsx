@@ -16,6 +16,7 @@ import type { FloatingBenefit } from "@/lib/site-defaults";
 interface FloatingActionsProps {
   consultationUrl?: string;
   benefits?: FloatingBenefit[];
+  scholarshipAmount?: number | null;
 }
 
 const DEFAULT_BENEFITS: FloatingBenefit[] = [
@@ -44,8 +45,20 @@ const DEFAULT_BENEFITS: FloatingBenefit[] = [
 export function FloatingActions({
   consultationUrl = "/zh-CN/consultation",
   benefits = DEFAULT_BENEFITS,
+  scholarshipAmount,
 }: FloatingActionsProps) {
   const [showGift, setShowGift] = useState(false);
+
+  const allBenefits = scholarshipAmount
+    ? [
+        {
+          icon: "Award",
+          title: "奖学金计划",
+          desc: `该校提供奖学金制度，最高可获 ¥${scholarshipAmount.toLocaleString("ja-JP")} 学费减免`,
+        },
+        ...benefits,
+      ]
+    : benefits;
 
   return (
     <>
@@ -146,7 +159,7 @@ export function FloatingActions({
               {/* Content */}
               <div className="flex-1 overflow-y-auto px-6 py-6">
                 <div className="space-y-3">
-                  {benefits.map((item, i) => {
+                  {allBenefits.map((item, i) => {
                     const ItemIcon = getIcon(item.icon);
                     return (
                       <motion.div

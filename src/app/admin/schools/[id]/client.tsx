@@ -60,6 +60,8 @@ export function SchoolEditClient({ school }: { school: School }) {
     hasPartTimeSupport: school.hasPartTimeSupport ?? false,
     tags: school.tags ?? [] as string[],
 
+    scholarshipAmount: school.scholarshipAmount ?? "",
+
     enrollmentPeriods: (school.enrollmentPeriods ?? []).join(", "),
     courseDurations: (school.courseDurations ?? []).join(", "),
 
@@ -109,6 +111,7 @@ export function SchoolEditClient({ school }: { school: School }) {
         hasVisaSupport: form.hasVisaSupport,
         hasPartTimeSupport: form.hasPartTimeSupport,
         tags: form.tags.length > 0 ? form.tags : null,
+        scholarshipAmount: form.scholarshipAmount === "" ? null : Number(form.scholarshipAmount),
 
         enrollmentPeriods: form.enrollmentPeriods
           ? form.enrollmentPeriods.split(",").map((s) => s.trim()).filter(Boolean)
@@ -415,6 +418,20 @@ export function SchoolEditClient({ school }: { school: School }) {
                   onCheckedChange={(v) => updateField("hasPartTimeSupport", !!v)}
                 />
                 <Label htmlFor="hasPartTimeSupport">打工支持</Label>
+              </div>
+
+              <div className="space-y-2 pt-4 border-t">
+                <Label htmlFor="scholarshipAmount">奖学金金额 (日元)</Label>
+                <Input
+                  id="scholarshipAmount"
+                  type="number"
+                  placeholder="例: 50000"
+                  value={form.scholarshipAmount}
+                  onChange={(e) => updateField("scholarshipAmount", e.target.value)}
+                />
+                <p className="text-xs text-muted-foreground">
+                  设置后将在学校详情页"报名礼遇"中展示奖学金计划
+                </p>
               </div>
 
               <div className="space-y-2 pt-4 border-t">

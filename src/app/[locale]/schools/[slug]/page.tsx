@@ -190,6 +190,9 @@ export default async function SchoolDetailPage({
                 </p>
                 <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
                   {[
+                    ...(school.scholarshipAmount
+                      ? [`奖学金计划：该校提供奖学金制度，最高可获 ¥${school.scholarshipAmount.toLocaleString("ja-JP")} 学费减免。`]
+                      : []),
                     "行前线上说明会 1 次，详细讲解该校课程安排、生活成本和注意事项。",
                     "日语课或专项辅导体验课若干次（具体课时数在咨询时确认）。",
                     "在留资格/签证材料预检查服务，减少因小问题导致的补件和延误。",
@@ -349,7 +352,7 @@ export default async function SchoolDetailPage({
       </div>
 
       {/* 右侧浮动操作栏 (与主页一致的样式) */}
-      <FloatingActions consultationUrl={consultationUrl} />
+      <FloatingActions consultationUrl={consultationUrl} scholarshipAmount={school.scholarshipAmount} />
     </>
   );
 }
