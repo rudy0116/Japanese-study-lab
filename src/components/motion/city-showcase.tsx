@@ -5,51 +5,13 @@ import Link from "next/link";
 import { useRef } from "react";
 import { motion } from "framer-motion";
 import { FadeIn } from "./fade-in";
+import type { CityItem } from "@/lib/site-defaults";
 
-const CITIES = [
-  {
-    name: "东京",
-    nameJa: "東京",
-    prefecture: "东京都",
-    schools: 5,
-    image:
-      "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=800&q=80&fit=crop",
-  },
-  {
-    name: "大阪",
-    nameJa: "大阪",
-    prefecture: "大阪府",
-    schools: 3,
-    image:
-      "https://images.unsplash.com/photo-1590559899731-a382839e5549?w=800&q=80&fit=crop",
-  },
-  {
-    name: "冲绳",
-    nameJa: "沖縄",
-    prefecture: "冲绳县",
-    schools: 1,
-    image:
-      "https://images.unsplash.com/photo-1568402102990-bc541580b59f?w=800&q=80&fit=crop",
-  },
-  {
-    name: "名古屋",
-    nameJa: "名古屋",
-    prefecture: "爱知县",
-    schools: 2,
-    image:
-      "https://images.unsplash.com/photo-1577862112796-a330e6f48a12?w=800&q=80&fit=crop",
-  },
-  {
-    name: "福冈",
-    nameJa: "福岡",
-    prefecture: "福冈县",
-    schools: 1,
-    image:
-      "https://images.unsplash.com/photo-1571167530149-c1105da4c2c7?w=800&q=80&fit=crop",
-  },
-];
+interface CityShowcaseProps {
+  cities: CityItem[];
+}
 
-export function CityShowcase() {
+export function CityShowcase({ cities }: CityShowcaseProps) {
   const constraintsRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -77,7 +39,7 @@ export function CityShowcase() {
               dragConstraints={constraintsRef}
               dragElastic={0.1}
             >
-              {CITIES.map((city) => (
+              {cities.map((city) => (
                 <Link
                   key={city.name}
                   href={`/zh-CN/schools?prefecture=${encodeURIComponent(city.prefecture)}`}

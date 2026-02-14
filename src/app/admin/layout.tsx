@@ -34,7 +34,36 @@ export default function AdminLayout({
               >
                 生活费数据
               </Link>
-              <div className="border-t pt-2">
+              <div className="border-t pt-2 mt-2">
+                <p className="px-3 py-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  内容管理
+                </p>
+                <Link
+                  href="/admin/content"
+                  className="block rounded-md px-3 py-2 text-sm hover:bg-accent"
+                >
+                  内容总览
+                </Link>
+                <Link
+                  href="/admin/content/homepage"
+                  className="block rounded-md px-3 py-2 text-sm hover:bg-accent"
+                >
+                  首页内容
+                </Link>
+                <Link
+                  href="/admin/content/cities"
+                  className="block rounded-md px-3 py-2 text-sm hover:bg-accent"
+                >
+                  城市展示
+                </Link>
+                <Link
+                  href="/admin/content/settings"
+                  className="block rounded-md px-3 py-2 text-sm hover:bg-accent"
+                >
+                  站点设置
+                </Link>
+              </div>
+              <div className="border-t pt-2 mt-2">
                 <Link
                   href="/zh-CN"
                   className="block rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-accent"

@@ -1,6 +1,23 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { getFeaturedSchools } from "@/lib/queries/schools";
+import { getSiteContent } from "@/lib/queries/site-content";
+import { getIcon } from "@/lib/icon-map";
+import {
+  CONTENT_KEYS,
+  DEFAULT_FEATURE_TAGS,
+  DEFAULT_STATS,
+  DEFAULT_STEPS,
+  DEFAULT_BONUSES,
+  DEFAULT_CITIES,
+  DEFAULT_FLOATING_BENEFITS,
+  type FeatureTag,
+  type StatItem,
+  type StepItem,
+  type BonusItem,
+  type CityItem,
+  type FloatingBenefit,
+} from "@/lib/site-defaults";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -16,79 +33,23 @@ import {
   Eye,
   BarChart3,
   Shield,
-  Search,
-  GitCompareArrows,
-  MessageSquareText,
-  FileCheck2,
-  PlaneTakeoff,
   ArrowRight,
-  BookOpen,
-  FileSearch,
-  MapPinned,
-  Gift,
-  GraduationCap,
-  Palette,
-  Briefcase,
-  UserCheck,
-  Globe,
-  Award,
 } from "lucide-react";
-
-const FEATURE_TAGS = [
-  {
-    icon: GraduationCap,
-    label: "升学强校",
-    desc: "高升学率，名校直通",
-    bg: "bg-gradient-to-br from-indigo-500 to-blue-700",
-    shadow: "shadow-indigo-500/30",
-    href: "/zh-CN/schools?search=升学",
-  },
-  {
-    icon: Palette,
-    label: "美术升学",
-    desc: "美大 · 专门学校对策",
-    bg: "bg-gradient-to-br from-pink-500 to-rose-700",
-    shadow: "shadow-pink-500/30",
-    href: "/zh-CN/schools?search=美术",
-  },
-  {
-    icon: Briefcase,
-    label: "就职辅导",
-    desc: "就职签证变更支持",
-    bg: "bg-gradient-to-br from-emerald-500 to-teal-700",
-    shadow: "shadow-emerald-500/30",
-    href: "/zh-CN/schools?search=就职",
-  },
-  {
-    icon: UserCheck,
-    label: "大龄OK",
-    desc: "30岁以上也可入学",
-    bg: "bg-gradient-to-br from-amber-500 to-orange-700",
-    shadow: "shadow-amber-500/30",
-    href: "/zh-CN/schools?search=大龄",
-  },
-  {
-    icon: Globe,
-    label: "零基础OK",
-    desc: "日语零基础可入学",
-    bg: "bg-gradient-to-br from-sky-500 to-cyan-700",
-    shadow: "shadow-sky-500/30",
-    href: "/zh-CN/schools?search=零基础",
-  },
-  {
-    icon: Award,
-    label: "奖学金制度",
-    desc: "学费减免 · 奖学金可申请",
-    bg: "bg-gradient-to-br from-violet-500 to-purple-700",
-    shadow: "shadow-violet-500/30",
-    href: "/zh-CN/schools?search=奖学金",
-  },
-];
 
 export default async function HomePage() {
   const t = await getTranslations("home");
 
-  const featuredSchools = await getFeaturedSchools();
+  const [featuredSchools, featureTags, stats, steps, bonuses, cities, floatingBenefits] =
+    await Promise.all([
+      getFeaturedSchools(),
+      getSiteContent<FeatureTag[]>(CONTENT_KEYS.FEATURE_TAGS, DEFAULT_FEATURE_TAGS),
+      getSiteContent<StatItem[]>(CONTENT_KEYS.STATS, DEFAULT_STATS),
+      getSiteContent<StepItem[]>(CONTENT_KEYS.STEPS, DEFAULT_STEPS),
+      getSiteContent<BonusItem[]>(CONTENT_KEYS.BONUSES, DEFAULT_BONUSES),
+      getSiteContent<CityItem[]>(CONTENT_KEYS.CITIES, DEFAULT_CITIES),
+      getSiteContent<FloatingBenefit[]>(CONTENT_KEYS.FLOATING_BENEFITS, DEFAULT_FLOATING_BENEFITS),
+    ]);
+
   const marqueeSchools = featuredSchools
     .filter((s) => s.coverImage)
     .map((s) => ({
@@ -115,70 +76,10 @@ export default async function HomePage() {
     },
   ];
 
-  const steps = [
-    {
-      step: "01",
-      icon: Search,
-      title: "选学校",
-      desc: "按地区、预算和特色筛选出 3–5 所候选学校。",
-    },
-    {
-      step: "02",
-      icon: GitCompareArrows,
-      title: "加对比",
-      desc: "用对比工具并排查看学费、通过率、生活成本。",
-    },
-    {
-      step: "03",
-      icon: MessageSquareText,
-      title: "提交咨询",
-      desc: "一次填写表单，平台帮你和学校沟通细节。",
-    },
-    {
-      step: "04",
-      icon: FileCheck2,
-      title: "确认方案",
-      desc: "收到包含总费用明细的留学方案，再做决定。",
-    },
-    {
-      step: "05",
-      icon: PlaneTakeoff,
-      title: "办理入学",
-      desc: "办签证和住宿，锁定赠送课程与行前服务。",
-    },
-  ];
-
-  const bonuses = [
-    {
-      href: "/zh-CN/services/japanese-lessons",
-      icon: BookOpen,
-      title: "行前日语体验课",
-      desc: "提供数次线上日语小班或 1v1 体验课，帮助你在出发前熟悉真实课堂节奏。",
-    },
-    {
-      href: "/zh-CN/services/visa-support",
-      icon: FileSearch,
-      title: "签证与材料预检查",
-      desc: "顾问协助检查在留资格材料，减少因细节错误被补件或延误的风险。",
-    },
-    {
-      href: "/zh-CN/services/life-guide",
-      icon: MapPinned,
-      title: "日本生活落地指南",
-      desc: "提供开银行卡、手机卡、住民登记等一步步操作清单，让第一周不踩坑。",
-    },
-    {
-      href: "/zh-CN/services/city-benefits",
-      icon: Gift,
-      title: "城市专属福利",
-      desc: "不同城市可能还会有额外福利（如交通卡充值、机票优惠等），详情可在咨询时确认。",
-    },
-  ];
-
   return (
     <div className="relative overflow-hidden">
       {/* Floating side actions (partylabel style) */}
-      <FloatingActions />
+      <FloatingActions benefits={floatingBenefits} />
 
       {/* ═══════════ Hero Section ═══════════ */}
       <section className="relative px-4 py-24 sm:py-32">
@@ -248,24 +149,27 @@ export default async function HomePage() {
           </FadeIn>
 
           <StaggerChildren className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6" staggerDelay={0.06}>
-            {FEATURE_TAGS.map((tag) => (
-              <StaggerItem key={tag.label}>
-                <Link
-                  href={tag.href}
-                  className={`group relative flex h-36 flex-col items-center justify-center overflow-hidden rounded-2xl ${tag.bg} p-4 text-center text-white shadow-lg ${tag.shadow} transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:h-40`}
-                >
-                  {/* Shimmer overlay on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/0 via-white/10 to-white/0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                  <tag.icon className="relative mb-3 h-8 w-8 transition-transform duration-300 group-hover:scale-110" />
-                  <span className="relative text-base font-bold tracking-wide">
-                    {tag.label}
-                  </span>
-                  <span className="relative mt-1 text-[11px] leading-tight text-white/75">
-                    {tag.desc}
-                  </span>
-                </Link>
-              </StaggerItem>
-            ))}
+            {featureTags.map((tag) => {
+              const TagIcon = getIcon(tag.icon);
+              return (
+                <StaggerItem key={tag.label}>
+                  <Link
+                    href={tag.href}
+                    className={`group relative flex h-36 flex-col items-center justify-center overflow-hidden rounded-2xl ${tag.bg} p-4 text-center text-white shadow-lg ${tag.shadow} transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:h-40`}
+                  >
+                    {/* Shimmer overlay on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/0 via-white/10 to-white/0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                    <TagIcon className="relative mb-3 h-8 w-8 transition-transform duration-300 group-hover:scale-110" />
+                    <span className="relative text-base font-bold tracking-wide">
+                      {tag.label}
+                    </span>
+                    <span className="relative mt-1 text-[11px] leading-tight text-white/75">
+                      {tag.desc}
+                    </span>
+                  </Link>
+                </StaggerItem>
+              );
+            })}
           </StaggerChildren>
         </div>
       </section>
@@ -331,33 +235,36 @@ export default async function HomePage() {
           </FadeIn>
 
           <StaggerChildren className="mt-14 grid gap-4 sm:grid-cols-5" staggerDelay={0.08}>
-            {steps.map((item, i) => (
-              <StaggerItem key={item.step}>
-                <Link
-                  href="/zh-CN/process"
-                  className="group relative flex h-full flex-col rounded-2xl border bg-card p-5 text-left card-premium"
-                >
-                  {i < steps.length - 1 && (
-                    <div className="absolute -right-2 top-8 hidden h-px w-4 bg-gradient-to-r from-primary/30 to-transparent sm:block" />
-                  )}
-                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/15 transition-all duration-300 group-hover:bg-primary group-hover:shadow-lg group-hover:shadow-primary/25">
-                    <item.icon className="h-5 w-5 text-primary transition-colors duration-300 group-hover:text-primary-foreground" />
-                  </div>
-                  <span className="text-[10px] font-mono font-bold tracking-wider text-primary/70">
-                    STEP {item.step}
-                  </span>
-                  <h3 className="mt-1.5 text-sm font-semibold text-foreground">
-                    {item.title}
-                  </h3>
-                  <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
-                    {item.desc}
-                  </p>
-                  <span className="mt-auto flex items-center gap-1 pt-3 text-[11px] font-medium text-primary/60 opacity-0 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100">
-                    查看详情 <ArrowRight className="h-3 w-3" />
-                  </span>
-                </Link>
-              </StaggerItem>
-            ))}
+            {steps.map((item, i) => {
+              const StepIcon = getIcon(item.icon);
+              return (
+                <StaggerItem key={item.step}>
+                  <Link
+                    href="/zh-CN/process"
+                    className="group relative flex h-full flex-col rounded-2xl border bg-card p-5 text-left card-premium"
+                  >
+                    {i < steps.length - 1 && (
+                      <div className="absolute -right-2 top-8 hidden h-px w-4 bg-gradient-to-r from-primary/30 to-transparent sm:block" />
+                    )}
+                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/15 transition-all duration-300 group-hover:bg-primary group-hover:shadow-lg group-hover:shadow-primary/25">
+                      <StepIcon className="h-5 w-5 text-primary transition-colors duration-300 group-hover:text-primary-foreground" />
+                    </div>
+                    <span className="text-[10px] font-mono font-bold tracking-wider text-primary/70">
+                      STEP {item.step}
+                    </span>
+                    <h3 className="mt-1.5 text-sm font-semibold text-foreground">
+                      {item.title}
+                    </h3>
+                    <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
+                      {item.desc}
+                    </p>
+                    <span className="mt-auto flex items-center gap-1 pt-3 text-[11px] font-medium text-primary/60 opacity-0 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100">
+                      查看详情 <ArrowRight className="h-3 w-3" />
+                    </span>
+                  </Link>
+                </StaggerItem>
+              );
+            })}
           </StaggerChildren>
 
           <FadeIn delay={0.4}>
@@ -390,28 +297,31 @@ export default async function HomePage() {
             </FadeIn>
 
             <StaggerChildren className="grid w-full max-w-xl gap-4 sm:grid-cols-2" staggerDelay={0.1}>
-              {bonuses.map((bonus) => (
-                <StaggerItem key={bonus.href}>
-                  <Link href={bonus.href} className="group block h-full">
-                    <Card className="h-full border bg-card card-premium overflow-hidden">
-                      <CardContent className="relative p-5">
-                        <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-lg bg-muted transition-all duration-300 group-hover:scale-110">
-                          <bonus.icon className="h-4 w-4 text-muted-foreground transition-colors duration-300 group-hover:text-primary" />
-                        </div>
-                        <h3 className="text-sm font-semibold text-foreground">
-                          {bonus.title}
-                        </h3>
-                        <p className="mt-2 text-xs text-muted-foreground">
-                          {bonus.desc}
-                        </p>
-                        <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-primary/70 transition-all duration-300 group-hover:translate-x-1 group-hover:text-primary">
-                          了解详情 <ArrowRight className="h-3 w-3" />
-                        </span>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                </StaggerItem>
-              ))}
+              {bonuses.map((bonus) => {
+                const BonusIcon = getIcon(bonus.icon);
+                return (
+                  <StaggerItem key={bonus.href}>
+                    <Link href={bonus.href} className="group block h-full">
+                      <Card className="h-full border bg-card card-premium overflow-hidden">
+                        <CardContent className="relative p-5">
+                          <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-lg bg-muted transition-all duration-300 group-hover:scale-110">
+                            <BonusIcon className="h-4 w-4 text-muted-foreground transition-colors duration-300 group-hover:text-primary" />
+                          </div>
+                          <h3 className="text-sm font-semibold text-foreground">
+                            {bonus.title}
+                          </h3>
+                          <p className="mt-2 text-xs text-muted-foreground">
+                            {bonus.desc}
+                          </p>
+                          <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-primary/70 transition-all duration-300 group-hover:translate-x-1 group-hover:text-primary">
+                            了解详情 <ArrowRight className="h-3 w-3" />
+                          </span>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  </StaggerItem>
+                );
+              })}
             </StaggerChildren>
           </div>
         </div>
@@ -421,12 +331,7 @@ export default async function HomePage() {
       <section className="border-t px-4 py-12">
         <FadeIn>
           <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-8 sm:gap-16">
-            {[
-              { label: "合作学校", value: "12+", suffix: "所" },
-              { label: "覆盖城市", value: "6", suffix: "座" },
-              { label: "佣金透明度", value: "100", suffix: "%" },
-              { label: "咨询费用", value: "0", suffix: "元" },
-            ].map((stat) => (
+            {stats.map((stat) => (
               <div key={stat.label} className="text-center">
                 <p className="text-3xl font-bold text-primary sm:text-4xl">
                   {stat.value}
@@ -442,7 +347,7 @@ export default async function HomePage() {
       </section>
 
       {/* ═══════════ City Showcase ═══════════ */}
-      <CityShowcase />
+      <CityShowcase cities={cities} />
 
       {/* ═══════════ CTA Section ═══════════ */}
       <section className="relative border-t px-4 py-20 sm:py-24">

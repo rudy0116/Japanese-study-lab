@@ -4,3 +4,4 @@ export * from "./school-courses";
 export * from "./school-media";
 export * from "./consultations";
 export * from "./living-costs";
+export * from "./site-content";

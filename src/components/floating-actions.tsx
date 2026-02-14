@@ -5,44 +5,46 @@ import {
   Gift,
   Heart,
   X,
-  BookOpen,
-  FileSearch,
-  MapPinned,
-  Sparkles,
   ChevronRight,
 } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { getIcon } from "@/lib/icon-map";
+import type { FloatingBenefit } from "@/lib/site-defaults";
 
-const BENEFITS = [
+interface FloatingActionsProps {
+  consultationUrl?: string;
+  benefits?: FloatingBenefit[];
+}
+
+const DEFAULT_BENEFITS: FloatingBenefit[] = [
   {
-    icon: BookOpen,
+    icon: "BookOpen",
     title: "行前日语体验课",
     desc: "线上小班或1v1体验课，出发前熟悉课堂节奏",
   },
   {
-    icon: FileSearch,
+    icon: "FileSearch",
     title: "签证材料预检查",
     desc: "顾问协助检查在留资格材料，减少补件风险",
   },
   {
-    icon: MapPinned,
+    icon: "MapPinned",
     title: "日本生活落地指南",
     desc: "银行卡、手机卡、住民登记一步步操作清单",
   },
   {
-    icon: Sparkles,
+    icon: "Sparkles",
     title: "城市专属福利",
     desc: "交通卡充值、机票优惠等额外福利",
   },
 ];
 
-interface FloatingActionsProps {
-  consultationUrl?: string;
-}
-
-export function FloatingActions({ consultationUrl = "/zh-CN/consultation" }: FloatingActionsProps) {
+export function FloatingActions({
+  consultationUrl = "/zh-CN/consultation",
+  benefits = DEFAULT_BENEFITS,
+}: FloatingActionsProps) {
   const [showGift, setShowGift] = useState(false);
 
   return (
@@ -144,27 +146,30 @@ export function FloatingActions({ consultationUrl = "/zh-CN/consultation" }: Flo
               {/* Content */}
               <div className="flex-1 overflow-y-auto px-6 py-6">
                 <div className="space-y-3">
-                  {BENEFITS.map((item, i) => (
-                    <motion.div
-                      key={item.title}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.15 + i * 0.07 }}
-                      className="group flex items-start gap-4 rounded-xl border p-4 transition-all duration-300 hover:border-primary/30 hover:shadow-sm"
-                    >
-                      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-primary/10 transition-all duration-300 group-hover:bg-primary group-hover:shadow-lg group-hover:shadow-primary/25">
-                        <item.icon className="h-5 w-5 text-primary transition-colors duration-300 group-hover:text-primary-foreground" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-foreground">
-                          {item.title}
-                        </h3>
-                        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                          {item.desc}
-                        </p>
-                      </div>
-                    </motion.div>
-                  ))}
+                  {benefits.map((item, i) => {
+                    const ItemIcon = getIcon(item.icon);
+                    return (
+                      <motion.div
+                        key={item.title}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.15 + i * 0.07 }}
+                        className="group flex items-start gap-4 rounded-xl border p-4 transition-all duration-300 hover:border-primary/30 hover:shadow-sm"
+                      >
+                        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-primary/10 transition-all duration-300 group-hover:bg-primary group-hover:shadow-lg group-hover:shadow-primary/25">
+                          <ItemIcon className="h-5 w-5 text-primary transition-colors duration-300 group-hover:text-primary-foreground" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-foreground">
+                            {item.title}
+                          </h3>
+                          <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                            {item.desc}
+                          </p>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
                 </div>
 
                 <p className="mt-6 rounded-lg bg-muted/50 p-3 text-[11px] leading-relaxed text-muted-foreground">
