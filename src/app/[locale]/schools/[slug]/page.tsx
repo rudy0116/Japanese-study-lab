@@ -188,11 +188,26 @@ export default async function SchoolDetailPage({
                 <p className="mt-2 text-sm text-muted-foreground">
                   为了让"信息透明"变成真正的优势，我们会把学校支付的佣金一部分，换成对你有实际帮助的服务。
                 </p>
+                {school.scholarshipAmount && (
+                  <div className="mt-4 flex items-center gap-4 rounded-xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-rose-500/10 px-5 py-4">
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 shadow-md shadow-orange-500/25">
+                      <span className="text-lg text-white">🏆</span>
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-widest text-amber-600 dark:text-amber-400">
+                        奖学金计划
+                      </p>
+                      <p className="mt-0.5">
+                        <span className="bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 bg-clip-text text-2xl font-extrabold tracking-tight text-transparent">
+                          ¥{school.scholarshipAmount.toLocaleString("ja-JP")}
+                        </span>
+                        <span className="ml-1.5 text-sm text-muted-foreground">学费减免</span>
+                      </p>
+                    </div>
+                  </div>
+                )}
                 <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
                   {[
-                    ...(school.scholarshipAmount
-                      ? [`奖学金计划：该校提供奖学金制度，最高可获 ¥${school.scholarshipAmount.toLocaleString("ja-JP")} 学费减免。`]
-                      : []),
                     "行前线上说明会 1 次，详细讲解该校课程安排、生活成本和注意事项。",
                     "日语课或专项辅导体验课若干次（具体课时数在咨询时确认）。",
                     "在留资格/签证材料预检查服务，减少因小问题导致的补件和延误。",

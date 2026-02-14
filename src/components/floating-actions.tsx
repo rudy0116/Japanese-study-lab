@@ -6,6 +6,7 @@ import {
   Heart,
   X,
   ChevronRight,
+  Award,
 } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
@@ -48,17 +49,6 @@ export function FloatingActions({
   scholarshipAmount,
 }: FloatingActionsProps) {
   const [showGift, setShowGift] = useState(false);
-
-  const allBenefits = scholarshipAmount
-    ? [
-        {
-          icon: "Award",
-          title: "奖学金计划",
-          desc: `该校提供奖学金制度，最高可获 ¥${scholarshipAmount.toLocaleString("ja-JP")} 学费减免`,
-        },
-        ...benefits,
-      ]
-    : benefits;
 
   return (
     <>
@@ -158,15 +148,55 @@ export function FloatingActions({
 
               {/* Content */}
               <div className="flex-1 overflow-y-auto px-6 py-6">
+                {/* Scholarship hero card */}
+                {scholarshipAmount && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.12, type: "spring", stiffness: 260, damping: 24 }}
+                    className="relative mb-5 overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500 via-orange-500 to-rose-500 p-[1px] shadow-lg shadow-orange-500/20"
+                  >
+                    <div className="relative overflow-hidden rounded-[15px] bg-background px-5 py-5">
+                      {/* Decorative glow */}
+                      <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-gradient-to-br from-amber-400/20 to-orange-500/20 blur-2xl" />
+                      <div className="pointer-events-none absolute -bottom-6 -left-6 h-20 w-20 rounded-full bg-gradient-to-tr from-rose-400/15 to-transparent blur-2xl" />
+
+                      <div className="relative flex items-center gap-3">
+                        <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 shadow-md shadow-orange-500/25">
+                          <Award className="h-5 w-5 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-widest text-amber-600 dark:text-amber-400">
+                            奖学金计划
+                          </p>
+                          <p className="mt-0.5 text-xs text-muted-foreground">
+                            该校提供奖学金制度，最高可获
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="relative mt-3 text-center">
+                        <span className="bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 bg-clip-text text-4xl font-extrabold tracking-tight text-transparent">
+                          ¥{scholarshipAmount.toLocaleString("ja-JP")}
+                        </span>
+                        <span className="ml-1.5 text-sm font-medium text-muted-foreground">
+                          学费减免
+                        </span>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
                 <div className="space-y-3">
-                  {allBenefits.map((item, i) => {
+                  {benefits.map((item, i) => {
                     const ItemIcon = getIcon(item.icon);
+                    const delay = scholarshipAmount ? 0.22 + i * 0.07 : 0.15 + i * 0.07;
                     return (
                       <motion.div
                         key={item.title}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.15 + i * 0.07 }}
+                        transition={{ delay }}
                         className="group flex items-start gap-4 rounded-xl border p-4 transition-all duration-300 hover:border-primary/30 hover:shadow-sm"
                       >
                         <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-primary/10 transition-all duration-300 group-hover:bg-primary group-hover:shadow-lg group-hover:shadow-primary/25">
