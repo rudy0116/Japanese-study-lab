@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { School } from "@/lib/db/schema/schools";
-import { PREFECTURES, SCHOOL_TYPE_LABELS } from "@/lib/utils";
+import { PREFECTURES, SCHOOL_TYPE_LABELS, SCHOOL_TAGS } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -58,6 +58,7 @@ export function SchoolEditClient({ school }: { school: School }) {
     hasDormitory: school.hasDormitory ?? false,
     hasVisaSupport: school.hasVisaSupport ?? true,
     hasPartTimeSupport: school.hasPartTimeSupport ?? false,
+    tags: school.tags ?? [] as string[],
 
     enrollmentPeriods: (school.enrollmentPeriods ?? []).join(", "),
     courseDurations: (school.courseDurations ?? []).join(", "),
@@ -107,6 +108,7 @@ export function SchoolEditClient({ school }: { school: School }) {
         hasDormitory: form.hasDormitory,
         hasVisaSupport: form.hasVisaSupport,
         hasPartTimeSupport: form.hasPartTimeSupport,
+        tags: form.tags.length > 0 ? form.tags : null,
 
         enrollmentPeriods: form.enrollmentPeriods
           ? form.enrollmentPeriods.split(",").map((s) => s.trim()).filter(Boolean)
@@ -413,6 +415,29 @@ export function SchoolEditClient({ school }: { school: School }) {
                   onCheckedChange={(v) => updateField("hasPartTimeSupport", !!v)}
                 />
                 <Label htmlFor="hasPartTimeSupport">打工支持</Label>
+              </div>
+
+              <div className="space-y-2 pt-4 border-t">
+                <Label>学校标签</Label>
+                <div className="grid gap-2 sm:grid-cols-3">
+                  {SCHOOL_TAGS.map((tag) => (
+                    <div key={tag} className="flex items-center gap-2">
+                      <Checkbox
+                        id={`tag-${tag}`}
+                        checked={form.tags.includes(tag)}
+                        onCheckedChange={(checked) => {
+                          setForm((prev) => ({
+                            ...prev,
+                            tags: checked
+                              ? [...prev.tags, tag]
+                              : prev.tags.filter((t) => t !== tag),
+                          }));
+                        }}
+                      />
+                      <Label htmlFor={`tag-${tag}`}>{tag}</Label>
+                    </div>
+                  ))}
+                </div>
               </div>
             </CardContent>
           </Card>

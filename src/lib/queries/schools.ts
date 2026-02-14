@@ -13,13 +13,14 @@ export type SchoolFilters = {
   minFee?: number;
   maxFee?: number;
   search?: string;
+  tag?: string;
   sort?: string;
   page?: number;
   pageSize?: number;
 };
 
 export async function getSchools(filters: SchoolFilters = {}) {
-  const { schoolType, prefecture, search, sort, page = 1, pageSize = 12 } = filters;
+  const { schoolType, prefecture, search, tag, sort, page = 1, pageSize = 12 } = filters;
   const offset = (page - 1) * pageSize;
 
   const conditions = [eq(schools.isPublished, true)];
@@ -40,6 +41,10 @@ export async function getSchools(filters: SchoolFilters = {}) {
         ilike(schools.descriptionZh, `%${search}%`)
       )!
     );
+  }
+
+  if (tag) {
+    conditions.push(sql`${schools.tags} @> ARRAY[${tag}]::text[]`);
   }
 
   let orderBy;

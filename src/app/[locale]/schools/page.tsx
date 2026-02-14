@@ -23,6 +23,7 @@ export default async function SchoolsPage({
     schoolType: params.type,
     prefecture: params.prefecture,
     search: params.search,
+    tag: params.tag,
     sort: params.sort || "newest",
     page: params.page ? parseInt(params.page) : 1,
   });

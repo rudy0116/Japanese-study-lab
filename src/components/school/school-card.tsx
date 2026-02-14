@@ -79,10 +79,15 @@ export function SchoolCard({
           </div>
 
           <div className="p-5">
-            <div className="mb-2 flex items-center gap-2">
+            <div className="mb-2 flex flex-wrap items-center gap-1.5">
               <Badge variant="secondary">
                 {SCHOOL_TYPE_LABELS[school.schoolType] || school.schoolType}
               </Badge>
+              {school.tags?.map((tag) => (
+                <Badge key={tag} variant="outline" className="text-xs">
+                  {tag}
+                </Badge>
+              ))}
             </div>
 
             <h3 className="text-lg font-semibold leading-tight">

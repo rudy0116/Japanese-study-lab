@@ -57,7 +57,7 @@ export const DEFAULT_FEATURE_TAGS: FeatureTag[] = [
     desc: "高升学率，名校直通",
     bg: "bg-gradient-to-br from-indigo-500 to-blue-700",
     shadow: "shadow-indigo-500/30",
-    href: "/zh-CN/schools?search=升学",
+    href: "/zh-CN/schools?tag=升学强校",
   },
   {
     icon: "Palette",
@@ -65,7 +65,7 @@ export const DEFAULT_FEATURE_TAGS: FeatureTag[] = [
     desc: "美大 · 专门学校对策",
     bg: "bg-gradient-to-br from-pink-500 to-rose-700",
     shadow: "shadow-pink-500/30",
-    href: "/zh-CN/schools?search=美术",
+    href: "/zh-CN/schools?tag=美术升学",
   },
   {
     icon: "Briefcase",
@@ -73,7 +73,7 @@ export const DEFAULT_FEATURE_TAGS: FeatureTag[] = [
     desc: "就职签证变更支持",
     bg: "bg-gradient-to-br from-emerald-500 to-teal-700",
     shadow: "shadow-emerald-500/30",
-    href: "/zh-CN/schools?search=就职",
+    href: "/zh-CN/schools?tag=就职辅导",
   },
   {
     icon: "UserCheck",
@@ -81,7 +81,7 @@ export const DEFAULT_FEATURE_TAGS: FeatureTag[] = [
     desc: "30岁以上也可入学",
     bg: "bg-gradient-to-br from-amber-500 to-orange-700",
     shadow: "shadow-amber-500/30",
-    href: "/zh-CN/schools?search=大龄",
+    href: "/zh-CN/schools?tag=大龄OK",
   },
   {
     icon: "Globe",
@@ -89,7 +89,7 @@ export const DEFAULT_FEATURE_TAGS: FeatureTag[] = [
     desc: "日语零基础可入学",
     bg: "bg-gradient-to-br from-sky-500 to-cyan-700",
     shadow: "shadow-sky-500/30",
-    href: "/zh-CN/schools?search=零基础",
+    href: "/zh-CN/schools?tag=零基础OK",
   },
   {
     icon: "Award",
@@ -97,7 +97,7 @@ export const DEFAULT_FEATURE_TAGS: FeatureTag[] = [
     desc: "学费减免 · 奖学金可申请",
     bg: "bg-gradient-to-br from-violet-500 to-purple-700",
     shadow: "shadow-violet-500/30",
-    href: "/zh-CN/schools?search=奖学金",
+    href: "/zh-CN/schools?tag=奖学金制度",
   },
 ];
 

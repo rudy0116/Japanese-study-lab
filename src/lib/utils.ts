@@ -70,3 +70,12 @@ export const SCHOOL_TYPE_LABELS: Record<string, string> = {
   language_school: "语言学校",
   prep_school: "预备校",
 };
+
+export const SCHOOL_TAGS = [
+  "升学强校",
+  "美术升学",
+  "就职辅导",
+  "大龄OK",
+  "零基础OK",
+  "奖学金制度",
+] as const;

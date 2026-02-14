@@ -11,6 +11,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { X } from "lucide-react";
 import { PREFECTURES } from "@/lib/utils";
 
 export function SchoolFilters() {
@@ -35,6 +37,7 @@ export function SchoolFilters() {
 
   const currentPrefecture = searchParams.get("prefecture") || "all";
   const currentType = searchParams.get("type") || "all";
+  const currentTag = searchParams.get("tag");
 
   const areaShortcuts: { label: string; value: string }[] = [
     { label: "全部", value: "all" },
@@ -49,6 +52,23 @@ export function SchoolFilters() {
 
   return (
     <div className="flex flex-col gap-3">
+      {/* 当前标签筛选 */}
+      {currentTag && (
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-muted-foreground">标签筛选：</span>
+          <Badge variant="default" className="gap-1">
+            {currentTag}
+            <button
+              type="button"
+              onClick={() => updateFilter("tag", "all")}
+              className="ml-0.5 rounded-full hover:bg-primary-foreground/20"
+            >
+              <X className="h-3 w-3" />
+            </button>
+          </Badge>
+        </div>
+      )}
+
       {/* 学校类型快速菜单：日本语语言学校 / 进学塾 */}
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-xs text-muted-foreground">类型：</span>

@@ -45,6 +45,7 @@ export const schools = pgTable("schools", {
 
   enrollmentPeriods: text("enrollment_periods").array(),
   courseDurations: text("course_durations").array(),
+  tags: text("tags").array(),
 
   commissionRate: real("commission_rate"),
   commissionAmount: integer("commission_amount"),

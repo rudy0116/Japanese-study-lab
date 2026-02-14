@@ -48,13 +48,16 @@ async function main() {
     await db
       .insert(siteContent)
       .values({ key, content, updatedAt: new Date() })
-      .onConflictDoNothing();
+      .onConflictDoUpdate({
+        target: siteContent.key,
+        set: { content, updatedAt: new Date() },
+      });
 
     console.log(`  ✓ ${key}`);
   }
 
   console.log("\nDone! Seeded", SEED_DATA.length, "content keys.");
-  console.log("Note: Existing entries were NOT overwritten (onConflictDoNothing).");
+  console.log("Note: Existing entries were overwritten with latest defaults.");
 }
 
 main().catch((err) => {
