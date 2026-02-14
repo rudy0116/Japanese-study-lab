@@ -74,9 +74,10 @@ export default async function AdminSchoolsPage() {
                   </Badge>
                 </TableCell>
                 <TableCell className="flex items-center gap-2">
-                  {!school.isPublished && (
-                    <PublishSchoolButton schoolId={school.id} />
-                  )}
+                  <PublishSchoolButton
+                    schoolId={school.id}
+                    isPublished={school.isPublished ?? false}
+                  />
                   <Link
                     href={`/admin/schools/${school.id}`}
                     className="text-sm text-primary hover:underline"

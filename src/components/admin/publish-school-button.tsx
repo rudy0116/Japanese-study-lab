@@ -5,18 +5,20 @@ import { Button } from "@/components/ui/button";
 
 export function PublishSchoolButton({
   schoolId,
+  isPublished = false,
   onPublished,
 }: {
   schoolId: number;
+  isPublished?: boolean;
   onPublished?: () => void;
 }) {
   const [loading, setLoading] = useState(false);
 
-  const handlePublish = async () => {
+  const handleClick = async () => {
     setLoading(true);
     try {
       const res = await fetch(`/api/admin/schools/${schoolId}/publish`, {
-        method: "POST",
+        method: isPublished ? "DELETE" : "POST",
       });
       if (res.ok) {
         onPublished?.();
@@ -31,10 +33,10 @@ export function PublishSchoolButton({
     <Button
       variant="outline"
       size="sm"
-      onClick={handlePublish}
+      onClick={handleClick}
       disabled={loading}
     >
-      {loading ? "处理中..." : "公开"}
+      {loading ? "处理中..." : isPublished ? "取消发布" : "公开"}
     </Button>
   );
 }

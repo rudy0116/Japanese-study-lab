@@ -6,32 +6,9 @@ import { eq } from "drizzle-orm";
 export const runtime = "nodejs";
 
 /**
- * POST /api/admin/schools/[id]/publish
- * 将学校设为已公开
+ * GET /api/admin/schools/[id]
  */
-export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const { id } = await params;
-  const numId = parseInt(id, 10);
-  if (Number.isNaN(numId)) {
-    return NextResponse.json({ error: "无效的 ID" }, { status: 400 });
-  }
-
-  await db
-    .update(schools)
-    .set({ isPublished: true, updatedAt: new Date() })
-    .where(eq(schools.id, numId));
-
-  return NextResponse.json({ ok: true, message: "已公开" });
-}
-
-/**
- * DELETE /api/admin/schools/[id]/publish
- * 取消发布学校
- */
-export async function DELETE(
+export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -41,10 +18,42 @@ export async function DELETE(
     return NextResponse.json({ error: "无效的 ID" }, { status: 400 });
   }
 
+  const [school] = await db
+    .select()
+    .from(schools)
+    .where(eq(schools.id, numId))
+    .limit(1);
+
+  if (!school) {
+    return NextResponse.json({ error: "学校不存在" }, { status: 404 });
+  }
+
+  return NextResponse.json(school);
+}
+
+/**
+ * PUT /api/admin/schools/[id]
+ */
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  const numId = parseInt(id, 10);
+  if (Number.isNaN(numId)) {
+    return NextResponse.json({ error: "无效的 ID" }, { status: 400 });
+  }
+
+  const body = await request.json();
+
+  // Remove fields that should not be updated directly
+  delete body.id;
+  delete body.createdAt;
+
   await db
     .update(schools)
-    .set({ isPublished: false, updatedAt: new Date() })
+    .set({ ...body, updatedAt: new Date() })
     .where(eq(schools.id, numId));
 
-  return NextResponse.json({ ok: true, message: "已取消发布" });
+  return NextResponse.json({ ok: true, message: "已更新" });
 }
