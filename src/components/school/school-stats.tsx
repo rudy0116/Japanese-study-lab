@@ -90,7 +90,7 @@ export function SchoolStats({ school }: SchoolStatsProps) {
             key={f.label}
             className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm ${
               f.value
-                ? "bg-green-50 text-green-700"
+                ? "bg-primary/10 text-primary"
                 : "bg-muted text-muted-foreground"
             }`}
           >

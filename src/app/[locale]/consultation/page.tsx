@@ -3,6 +3,8 @@ export const dynamic = "force-dynamic";
 import { getTranslations } from "next-intl/server";
 import { getAllPublishedSchools } from "@/lib/queries/schools";
 import { ConsultationForm } from "@/components/consultation/consultation-form";
+import { PageContainer } from "@/components/layout/page-container";
+import { PageHeader } from "@/components/layout/page-header";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -20,16 +22,13 @@ export default async function ConsultationPage({
   const schools = await getAllPublishedSchools();
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold">{t("title")}</h1>
-        <p className="mt-3 text-muted-foreground">{t("subtitle")}</p>
-      </div>
+    <PageContainer size="sm">
+      <PageHeader centered title={t("title")} subtitle={t("subtitle")} />
 
       <ConsultationForm
         schools={schools}
         preselectedSchool={params.school}
       />
-    </div>
+    </PageContainer>
   );
 }

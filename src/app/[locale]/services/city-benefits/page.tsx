@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { PageContainer } from "@/components/layout/page-container";
+import { PageHeader } from "@/components/layout/page-header";
+import { StaggerChildren, StaggerItem, FadeIn } from "@/components/motion";
 import { ArrowLeft, MapPin, Gift, CheckCircle2 } from "lucide-react";
 import type { Metadata } from "next";
 
@@ -66,7 +68,7 @@ const cities = [
 
 export default function CityBenefitsPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+    <PageContainer size="md">
       <Link
         href="/zh-CN"
         className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary"
@@ -75,81 +77,88 @@ export default function CityBenefitsPage() {
         返回首页
       </Link>
 
-      {/* Header */}
-      <div className="mb-12">
-        <Badge className="mb-4">额外福利</Badge>
-        <h1 className="text-3xl font-bold sm:text-4xl">城市专属福利</h1>
-        <p className="mt-4 text-lg text-muted-foreground">
-          不同城市有不同的生活节奏和特色。通过平台完成入学的同学，
-          我们会根据你所去的城市提供一些实用的落地福利，帮你更快融入当地生活。
-        </p>
-        <p className="mt-3 text-sm text-muted-foreground">
-          以下福利视合作情况可能有所调整，具体内容以咨询时确认为准。
-        </p>
-      </div>
+      <PageHeader
+        label="额外福利"
+        title="城市专属福利"
+        subtitle={
+          <>
+            不同城市有不同的生活节奏和特色。通过平台完成入学的同学，
+            我们会根据你所去的城市提供一些实用的落地福利，帮你更快融入当地生活。
+            <span className="mt-3 block text-sm">
+              以下福利视合作情况可能有所调整，具体内容以咨询时确认为准。
+            </span>
+          </>
+        }
+      />
 
       {/* City cards */}
       <section className="mb-16">
-        <div className="grid gap-6 sm:grid-cols-2">
+        <StaggerChildren className="grid gap-6 sm:grid-cols-2" staggerDelay={0.08}>
           {cities.map((city) => (
-            <Card key={city.name} className="border bg-card">
-              <CardContent className="p-6">
-                <div className="mb-4 flex items-center gap-2">
-                  <MapPin className="h-5 w-5 text-primary" />
-                  <h3 className="text-lg font-bold">{city.name}</h3>
-                </div>
-                <ul className="mb-4 space-y-2">
-                  {city.benefits.map((benefit, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <Gift className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                      <span className="text-sm">{benefit}</span>
-                    </li>
-                  ))}
-                </ul>
-                <p className="text-xs leading-relaxed text-muted-foreground">
-                  {city.note}
-                </p>
-              </CardContent>
-            </Card>
+            <StaggerItem key={city.name}>
+              <Card className="border bg-card">
+                <CardContent className="p-6">
+                  <div className="mb-4 flex items-center gap-2">
+                    <MapPin className="h-5 w-5 text-primary" />
+                    <h3 className="text-lg font-bold">{city.name}</h3>
+                  </div>
+                  <ul className="mb-4 space-y-2">
+                    {city.benefits.map((benefit, i) => (
+                      <li key={i} className="flex items-start gap-2">
+                        <Gift className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                        <span className="text-sm">{benefit}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="text-xs leading-relaxed text-muted-foreground">
+                    {city.note}
+                  </p>
+                </CardContent>
+              </Card>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerChildren>
       </section>
 
       {/* General benefits */}
-      <section className="mb-16">
-        <Card className="border-primary/20 bg-primary/5">
-          <CardContent className="p-8">
-            <h2 className="mb-6 text-xl font-bold text-primary">
-              所有城市通用福利
-            </h2>
-            <div className="space-y-3">
-              {[
-                "行前日语体验课（线上，按水平匹配）",
-                "签证与材料预检查服务",
-                "日本生活落地指南（按目标城市定制）",
-                "入学后 1 个月内的微信/LINE 答疑支持",
-                "同城留学生交流群（认识同期同学）",
-              ].map((item, i) => (
-                <div key={i} className="flex items-start gap-2.5">
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                  <span className="text-sm">{item}</span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </section>
+      <FadeIn>
+        <section className="mb-16">
+          <Card className="border-primary/20 bg-primary/5">
+            <CardContent className="p-8">
+              <h2 className="mb-6 text-xl font-bold text-primary">
+                所有城市通用福利
+              </h2>
+              <div className="space-y-3">
+                {[
+                  "行前日语体验课（线上，按水平匹配）",
+                  "签证与材料预检查服务",
+                  "日本生活落地指南（按目标城市定制）",
+                  "入学后 1 个月内的微信/LINE 答疑支持",
+                  "同城留学生交流群（认识同期同学）",
+                ].map((item, i) => (
+                  <div key={i} className="flex items-start gap-2.5">
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                    <span className="text-sm">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+      </FadeIn>
 
       {/* CTA */}
-      <div className="text-center">
-        <h2 className="text-2xl font-bold">想了解你目标城市的福利？</h2>
-        <p className="mt-2 text-muted-foreground">
-          告诉我们你想去哪个城市，我们会提供详细的福利清单
-        </p>
-        <Link href="/zh-CN/consultation" className="mt-6 inline-block">
-          <Button size="lg">免费咨询</Button>
-        </Link>
-      </div>
-    </div>
+      <FadeIn delay={0.1}>
+        <div className="text-center">
+          <h2 className="text-2xl font-bold tracking-cjk-tight">想了解你目标城市的福利？</h2>
+          <p className="mt-2 text-muted-foreground">
+            告诉我们你想去哪个城市，我们会提供详细的福利清单
+          </p>
+          <Link href="/zh-CN/consultation" className="mt-6 inline-block">
+            <Button size="lg">免费咨询</Button>
+          </Link>
+        </div>
+      </FadeIn>
+    </PageContainer>
   );
 }

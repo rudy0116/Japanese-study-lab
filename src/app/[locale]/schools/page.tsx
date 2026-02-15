@@ -4,6 +4,8 @@ import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { getSchools } from "@/lib/queries/schools";
 import { SchoolListClient } from "./school-list-client";
+import { PageContainer } from "@/components/layout/page-container";
+import { PageHeader } from "@/components/layout/page-header";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -29,11 +31,8 @@ export default async function SchoolsPage({
   });
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">{t("title")}</h1>
-        <p className="mt-2 text-muted-foreground">{t("subtitle")}</p>
-
+    <PageContainer>
+      <PageHeader title={t("title")} subtitle={t("subtitle")}>
         {/* 进学塾说明与示例 */}
         {params.type === "prep_school" && (
           <div className="mt-4 rounded-xl border border-primary/25 bg-primary/5 px-4 py-3 text-sm text-muted-foreground">
@@ -50,7 +49,7 @@ export default async function SchoolsPage({
             </p>
           </div>
         )}
-      </div>
+      </PageHeader>
 
       <Suspense fallback={<div className="py-12 text-center">加载中...</div>}>
         <SchoolListClient
@@ -60,6 +59,6 @@ export default async function SchoolsPage({
           totalPages={result.totalPages}
         />
       </Suspense>
-    </div>
+    </PageContainer>
   );
 }

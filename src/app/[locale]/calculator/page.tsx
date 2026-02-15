@@ -4,6 +4,8 @@ import { getTranslations } from "next-intl/server";
 import { getAllPublishedSchools } from "@/lib/queries/schools";
 import { getAllLivingCosts } from "@/lib/queries/living-costs";
 import { CostCalculatorForm } from "@/components/calculator/cost-calculator-form";
+import { PageContainer } from "@/components/layout/page-container";
+import { PageHeader } from "@/components/layout/page-header";
 import { db } from "@/lib/db";
 import { schools, schoolFeeItems } from "@/lib/db/schema";
 import { eq, asc } from "drizzle-orm";
@@ -35,16 +37,13 @@ export default async function CalculatorPage() {
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">{t("title")}</h1>
-        <p className="mt-2 text-muted-foreground">{t("subtitle")}</p>
-      </div>
+    <PageContainer>
+      <PageHeader title={t("title")} subtitle={t("subtitle")} />
 
       <CostCalculatorForm
         schools={schoolsWithFees}
         livingCosts={livingCosts}
       />
-    </div>
+    </PageContainer>
   );
 }

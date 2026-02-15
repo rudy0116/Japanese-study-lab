@@ -14,8 +14,12 @@ import { MapPin, ArrowRight } from "lucide-react";
 import { formatJPY, SCHOOL_TYPE_LABELS } from "@/lib/utils";
 
 export async function generateStaticParams() {
-  const schools = await getAllPublishedSchoolsForSitemap();
-  return schools.map((s) => ({ slug: s.slug }));
+  try {
+    const list = await getAllPublishedSchoolsForSitemap();
+    return list.map((s) => ({ slug: s.slug }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({
@@ -24,13 +28,20 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const school = await getSchoolBySlug(slug);
+  let school: Awaited<ReturnType<typeof getSchoolBySlug>>;
+  try {
+    school = await getSchoolBySlug(slug);
+  } catch {
+    return { title: "学校未找到" };
+  }
   if (!school) return { title: "学校未找到" };
 
-  const firstYearTotal = school.fees.reduce((sum, fee) => {
-    if (fee.period === "one_time" || fee.period === "annual") return sum + fee.amount;
-    if (fee.period === "semi_annual") return sum + fee.amount * 2;
-    if (fee.period === "monthly") return sum + fee.amount * 12;
+  const fees = school.fees ?? [];
+  const firstYearTotal = fees.reduce((sum, fee) => {
+    const amount = Number(fee?.amount) || 0;
+    if (fee?.period === "one_time" || fee?.period === "annual") return sum + amount;
+    if (fee?.period === "semi_annual") return sum + amount * 2;
+    if (fee?.period === "monthly") return sum + amount * 12;
     return sum;
   }, 0);
 
@@ -87,16 +98,23 @@ export default async function SchoolDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const school = await getSchoolBySlug(slug);
+  let school: Awaited<ReturnType<typeof getSchoolBySlug>>;
+  try {
+    school = await getSchoolBySlug(slug);
+  } catch {
+    notFound();
+  }
 
   if (!school) {
     notFound();
   }
 
-  const firstYearTotal = school.fees.reduce((sum, fee) => {
-    if (fee.period === "one_time" || fee.period === "annual") return sum + fee.amount;
-    if (fee.period === "semi_annual") return sum + fee.amount * 2;
-    if (fee.period === "monthly") return sum + fee.amount * 12;
+  const fees = school.fees ?? [];
+  const firstYearTotal = fees.reduce((sum, fee) => {
+    const amount = Number(fee?.amount) || 0;
+    if (fee?.period === "one_time" || fee?.period === "annual") return sum + amount;
+    if (fee?.period === "semi_annual") return sum + amount * 2;
+    if (fee?.period === "monthly") return sum + amount * 12;
     return sum;
   }, 0);
 
@@ -318,7 +336,7 @@ export default async function SchoolDetailPage({
             </TabsContent>
 
             <TabsContent value="fees" className="space-y-6">
-              <FeeBreakdownTable fees={school.fees} />
+              <FeeBreakdownTable fees={fees} />
               <CommissionBadge
                 commissionAmount={school.commissionAmount}
                 commissionRate={school.commissionRate}
@@ -327,9 +345,9 @@ export default async function SchoolDetailPage({
             </TabsContent>
 
             <TabsContent value="courses">
-              {school.courses.length > 0 ? (
+              {(school.courses ?? []).length > 0 ? (
                 <div className="grid gap-4 sm:grid-cols-2">
-                  {school.courses.map((course) => (
+                  {(school.courses ?? []).map((course) => (
                     <div
                       key={course.id}
                       className="rounded-xl border p-5 transition-all duration-200 hover:border-primary/30 hover:shadow-sm"

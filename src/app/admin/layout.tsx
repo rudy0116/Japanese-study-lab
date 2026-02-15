@@ -1,5 +1,24 @@
 import Link from "next/link";
+import { Noto_Sans_SC, Noto_Sans_JP, Inter } from "next/font/google";
 import "@/app/globals.css";
+
+const notoSansSC = Noto_Sans_SC({
+  subsets: ["latin"],
+  variable: "--font-noto-sc",
+  display: "swap",
+});
+
+const notoSansJP = Noto_Sans_JP({
+  subsets: ["latin"],
+  variable: "--font-noto-jp",
+  display: "swap",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 export default function AdminLayout({
   children,
@@ -7,8 +26,8 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="zh-CN">
-      <body className="min-h-screen antialiased">
+    <html lang="zh-CN" className={`${notoSansSC.variable} ${notoSansJP.variable} ${inter.variable}`}>
+      <body className="min-h-screen font-sans antialiased">
         <div className="flex min-h-screen">
           {/* Sidebar */}
           <aside className="w-64 border-r bg-secondary/30 p-6">

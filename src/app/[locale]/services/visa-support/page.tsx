@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { PageContainer } from "@/components/layout/page-container";
+import { PageHeader } from "@/components/layout/page-header";
+import { StaggerChildren, StaggerItem, FadeIn } from "@/components/motion";
 import {
   FileCheck,
   AlertTriangle,
@@ -88,7 +90,7 @@ const commonMistakes = [
 
 export default function VisaSupportPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+    <PageContainer size="md">
       <Link
         href="/zh-CN"
         className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary"
@@ -97,19 +99,15 @@ export default function VisaSupportPage() {
         返回首页
       </Link>
 
-      {/* Header */}
-      <div className="mb-12">
-        <Badge className="mb-4">免费服务</Badge>
-        <h1 className="text-3xl font-bold sm:text-4xl">签证与材料预检查</h1>
-        <p className="mt-4 text-lg text-muted-foreground">
-          在留资格申请材料的准备是留学中最容易出错的环节。一个日期格式不对、一份证明过期，
-          都可能导致补件甚至延误入学。我们的顾问会在你提交前逐项检查，帮你把风险降到最低。
-        </p>
-      </div>
+      <PageHeader
+        label="免费服务"
+        title="签证与材料预检查"
+        subtitle="在留资格申请材料的准备是留学中最容易出错的环节。一个日期格式不对、一份证明过期，都可能导致补件甚至延误入学。我们的顾问会在你提交前逐项检查，帮你把风险降到最低。"
+      />
 
       {/* Service highlights */}
       <section className="mb-16">
-        <div className="grid gap-6 sm:grid-cols-2">
+        <StaggerChildren className="grid gap-6 sm:grid-cols-2" staggerDelay={0.08}>
           {[
             {
               icon: Search,
@@ -132,82 +130,91 @@ export default function VisaSupportPage() {
               desc: "提醒存款证明有效期、照片拍摄时间等有时效要求的材料。",
             },
           ].map((item) => (
-            <Card key={item.title} className="border bg-card">
-              <CardContent className="p-6">
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                  <item.icon className="h-5 w-5 text-primary" />
-                </div>
-                <h3 className="text-base font-semibold">{item.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  {item.desc}
-                </p>
-              </CardContent>
-            </Card>
+            <StaggerItem key={item.title}>
+              <Card className="border bg-card">
+                <CardContent className="p-6">
+                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                    <item.icon className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="text-base font-semibold">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    {item.desc}
+                  </p>
+                </CardContent>
+              </Card>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerChildren>
       </section>
 
       {/* Checklist */}
-      <section className="mb-16">
-        <h2 className="mb-8 text-2xl font-bold">检查清单</h2>
-        <div className="space-y-6">
-          {checkItems.map((group) => (
-            <Card key={group.category} className="border bg-card">
-              <CardContent className="p-6">
-                <h3 className="mb-4 text-base font-semibold">
-                  {group.category}
-                </h3>
-                <ul className="space-y-2.5">
-                  {group.items.map((item, i) => (
-                    <li key={i} className="flex items-start gap-2.5">
-                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                      <span className="text-sm text-muted-foreground">
-                        {item}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
+      <FadeIn>
+        <section className="mb-16">
+          <h2 className="mb-8 text-2xl font-bold tracking-cjk-tight">检查清单</h2>
+          <div className="space-y-6">
+            {checkItems.map((group) => (
+              <Card key={group.category} className="border bg-card">
+                <CardContent className="p-6">
+                  <h3 className="mb-4 text-base font-semibold">
+                    {group.category}
+                  </h3>
+                  <ul className="space-y-2.5">
+                    {group.items.map((item, i) => (
+                      <li key={i} className="flex items-start gap-2.5">
+                        <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                        <span className="text-sm text-muted-foreground">
+                          {item}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+      </FadeIn>
 
       {/* Common mistakes */}
-      <section className="mb-16">
-        <h2 className="mb-8 text-2xl font-bold">常见被退回的原因</h2>
-        <div className="grid gap-4 sm:grid-cols-2">
-          {commonMistakes.map((item) => (
-            <Card
-              key={item.title}
-              className="border-amber-200 bg-amber-50/50"
-            >
-              <CardContent className="p-5">
-                <div className="mb-3 flex items-center gap-2">
-                  <item.icon className="h-4 w-4 text-amber-600" />
-                  <h3 className="text-sm font-semibold text-amber-900">
-                    {item.title}
-                  </h3>
-                </div>
-                <p className="text-xs leading-relaxed text-amber-800/70">
-                  {item.description}
-                </p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
+      <FadeIn delay={0.1}>
+        <section className="mb-16">
+          <h2 className="mb-8 text-2xl font-bold tracking-cjk-tight">常见被退回的原因</h2>
+          <StaggerChildren className="grid gap-4 sm:grid-cols-2" staggerDelay={0.08}>
+            {commonMistakes.map((item) => (
+              <StaggerItem key={item.title}>
+                <Card
+                  className="border-amber-200 bg-amber-50/50"
+                >
+                  <CardContent className="p-5">
+                    <div className="mb-3 flex items-center gap-2">
+                      <item.icon className="h-4 w-4 text-amber-600" />
+                      <h3 className="text-sm font-semibold text-amber-900">
+                        {item.title}
+                      </h3>
+                    </div>
+                    <p className="text-xs leading-relaxed text-amber-800/70">
+                      {item.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              </StaggerItem>
+            ))}
+          </StaggerChildren>
+        </section>
+      </FadeIn>
 
       {/* CTA */}
-      <div className="text-center">
-        <h2 className="text-2xl font-bold">担心材料有问题？</h2>
-        <p className="mt-2 text-muted-foreground">
-          提交咨询后，顾问会帮你逐项检查所有申请材料
-        </p>
-        <Link href="/zh-CN/consultation" className="mt-6 inline-block">
-          <Button size="lg">免费咨询</Button>
-        </Link>
-      </div>
-    </div>
+      <FadeIn delay={0.2}>
+        <div className="text-center">
+          <h2 className="text-2xl font-bold tracking-cjk-tight">担心材料有问题？</h2>
+          <p className="mt-2 text-muted-foreground">
+            提交咨询后，顾问会帮你逐项检查所有申请材料
+          </p>
+          <Link href="/zh-CN/consultation" className="mt-6 inline-block">
+            <Button size="lg">免费咨询</Button>
+          </Link>
+        </div>
+      </FadeIn>
+    </PageContainer>
   );
 }

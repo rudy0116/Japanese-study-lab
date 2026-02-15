@@ -2,6 +2,9 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { PageContainer } from "@/components/layout/page-container";
+import { PageHeader } from "@/components/layout/page-header";
+import { StaggerChildren, StaggerItem, FadeIn } from "@/components/motion";
 import {
   BookOpen,
   Users,
@@ -66,7 +69,7 @@ const levels = [
 
 export default function JapaneseLessonsPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+    <PageContainer size="md">
       <Link
         href="/zh-CN"
         className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary"
@@ -75,97 +78,101 @@ export default function JapaneseLessonsPage() {
         返回首页
       </Link>
 
-      {/* Header */}
-      <div className="mb-12">
-        <Badge className="mb-4">免费服务</Badge>
-        <h1 className="text-3xl font-bold sm:text-4xl">行前日语体验课</h1>
-        <p className="mt-4 text-lg text-muted-foreground">
-          出发前就进入学习状态。通过平台报名的同学，可免费获得数次线上日语体验课，
-          提前适应日本语言学校的真实课堂节奏，到了日本不再手忙脚乱。
-        </p>
-      </div>
+      <PageHeader
+        label="免费服务"
+        title="行前日语体验课"
+        subtitle="出发前就进入学习状态。通过平台报名的同学，可免费获得数次线上日语体验课，提前适应日本语言学校的真实课堂节奏，到了日本不再手忙脚乱。"
+      />
 
       {/* Features */}
       <section className="mb-16">
-        <h2 className="mb-8 text-2xl font-bold">课程特色</h2>
-        <div className="grid gap-6 sm:grid-cols-2">
+        <h2 className="mb-8 text-2xl font-bold tracking-cjk-tight">课程特色</h2>
+        <StaggerChildren className="grid gap-6 sm:grid-cols-2" staggerDelay={0.08}>
           {features.map((feature) => (
-            <Card key={feature.title} className="border bg-card">
-              <CardContent className="p-6">
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                  <feature.icon className="h-5 w-5 text-primary" />
-                </div>
-                <h3 className="text-base font-semibold">{feature.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  {feature.description}
-                </p>
-              </CardContent>
-            </Card>
+            <StaggerItem key={feature.title}>
+              <Card className="border bg-card">
+                <CardContent className="p-6">
+                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                    <feature.icon className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="text-base font-semibold">{feature.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    {feature.description}
+                  </p>
+                </CardContent>
+              </Card>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerChildren>
       </section>
 
       {/* Levels */}
-      <section className="mb-16">
-        <h2 className="mb-8 text-2xl font-bold">按水平匹配课程</h2>
-        <div className="space-y-4">
-          {levels.map((item) => (
-            <Card key={item.level} className="border bg-card">
-              <CardContent className="flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <Badge variant="outline" className="mb-2">
-                    {item.level}
-                  </Badge>
-                  <p className="text-sm text-muted-foreground">
-                    {item.content}
-                  </p>
-                </div>
-                <div className="shrink-0 text-right">
-                  <p className="text-sm font-semibold text-primary">
-                    {item.sessions}
-                  </p>
-                  <p className="text-xs text-muted-foreground">体验课次数</p>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
+      <FadeIn>
+        <section className="mb-16">
+          <h2 className="mb-8 text-2xl font-bold tracking-cjk-tight">按水平匹配课程</h2>
+          <div className="space-y-4">
+            {levels.map((item) => (
+              <Card key={item.level} className="border bg-card">
+                <CardContent className="flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <Badge variant="outline" className="mb-2">
+                      {item.level}
+                    </Badge>
+                    <p className="text-sm text-muted-foreground">
+                      {item.content}
+                    </p>
+                  </div>
+                  <div className="shrink-0 text-right">
+                    <p className="text-sm font-semibold text-primary">
+                      {item.sessions}
+                    </p>
+                    <p className="text-xs text-muted-foreground">体验课次数</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+      </FadeIn>
 
       {/* How to get */}
-      <section className="mb-16">
-        <Card className="border-primary/20 bg-primary/5">
-          <CardContent className="p-8">
-            <h2 className="mb-6 text-xl font-bold text-primary">
-              如何获得体验课？
-            </h2>
-            <ol className="space-y-4">
-              {[
-                "通过平台提交咨询并确认入学意向",
-                "顾问会根据你的日语水平和出发时间安排体验课",
-                "通过 Zoom 或腾讯会议参加线上课程",
-                "课后收到学习反馈，做好出发准备",
-              ].map((step, i) => (
-                <li key={i} className="flex items-start gap-3">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                  <span className="text-sm">{step}</span>
-                </li>
-              ))}
-            </ol>
-          </CardContent>
-        </Card>
-      </section>
+      <FadeIn delay={0.1}>
+        <section className="mb-16">
+          <Card className="border-primary/20 bg-primary/5">
+            <CardContent className="p-8">
+              <h2 className="mb-6 text-xl font-bold text-primary">
+                如何获得体验课？
+              </h2>
+              <ol className="space-y-4">
+                {[
+                  "通过平台提交咨询并确认入学意向",
+                  "顾问会根据你的日语水平和出发时间安排体验课",
+                  "通过 Zoom 或腾讯会议参加线上课程",
+                  "课后收到学习反馈，做好出发准备",
+                ].map((step, i) => (
+                  <li key={i} className="flex items-start gap-3">
+                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                    <span className="text-sm">{step}</span>
+                  </li>
+                ))}
+              </ol>
+            </CardContent>
+          </Card>
+        </section>
+      </FadeIn>
 
       {/* CTA */}
-      <div className="text-center">
-        <h2 className="text-2xl font-bold">想提前体验日语课堂？</h2>
-        <p className="mt-2 text-muted-foreground">
-          提交咨询后即可安排免费体验课
-        </p>
-        <Link href="/zh-CN/consultation" className="mt-6 inline-block">
-          <Button size="lg">免费咨询</Button>
-        </Link>
-      </div>
-    </div>
+      <FadeIn delay={0.2}>
+        <div className="text-center">
+          <h2 className="text-2xl font-bold tracking-cjk-tight">想提前体验日语课堂？</h2>
+          <p className="mt-2 text-muted-foreground">
+            提交咨询后即可安排免费体验课
+          </p>
+          <Link href="/zh-CN/consultation" className="mt-6 inline-block">
+            <Button size="lg">免费咨询</Button>
+          </Link>
+        </div>
+      </FadeIn>
+    </PageContainer>
   );
 }

@@ -2,6 +2,9 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { PageContainer } from "@/components/layout/page-container";
+import { PageHeader } from "@/components/layout/page-header";
+import { StaggerChildren, StaggerItem, FadeIn } from "@/components/motion";
 import {
   ClipboardList,
   School,
@@ -87,90 +90,87 @@ const steps = [
 
 export default function ProcessPage() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-      <div className="mb-10 text-center">
-        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary/80">
-          申请流程
-        </p>
-        <h1 className="mt-3 text-3xl font-bold sm:text-4xl">
-          日本留学，从 5 个清晰步骤开始
-        </h1>
-        <p className="mt-3 text-sm text-muted-foreground">
-          参考日本本地会场预订网站的逻辑，用简单的 5 步流程，把“选校、对比、咨询、签证、出发”
-          串成一条清晰的路径。
-        </p>
-      </div>
+    <PageContainer size="lg">
+      <PageHeader
+        centered
+        label="申请流程"
+        title="日本留学，从 5 个清晰步骤开始"
+        subtitle={"参考日本本地会场预订网站的逻辑，用简单的 5 步流程，把“选校、对比、咨询、签证、出发”串成一条清晰的路径。"}
+      />
 
       {/* Horizontal / responsive steps */}
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <StaggerChildren className="grid gap-6 md:grid-cols-2 xl:grid-cols-3" staggerDelay={0.08}>
         {steps.map((step) => (
-          <Card
-            key={step.step}
-            className="flex flex-col border border-white/10 bg-gradient-to-b from-white/10 via-white/[0.02] to-transparent backdrop-blur-xl"
-          >
-            <CardContent className="flex flex-1 flex-col p-5">
-              <div className="mb-3 flex items-center justify-between gap-2">
-                <Badge
-                  variant="outline"
-                  className="border-primary/40 bg-primary/10 text-[11px] font-mono tracking-[0.16em] uppercase"
-                >
-                  {step.step}
-                </Badge>
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <step.icon className="h-4 w-4" />
-                </div>
-              </div>
-              <h2 className="text-sm font-semibold text-foreground">
-                {step.title}
-              </h2>
-              <p className="mt-1 text-xs text-muted-foreground">
-                {step.subtitle}
-              </p>
-              <ul className="mt-3 space-y-1.5">
-                {step.items.map((item) => (
-                  <li
-                    key={item}
-                    className="flex items-start gap-2 text-xs text-muted-foreground"
-                  >
-                    <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-primary/70" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              {step.ctaHref && (
-                <Link href={step.ctaHref} className="mt-4 inline-flex">
-                  <Button
-                    size="sm"
+          <StaggerItem key={step.step}>
+            <Card
+              className="flex flex-col border bg-card shadow-sm card-premium hover:border-primary/20"
+            >
+              <CardContent className="flex flex-1 flex-col p-5">
+                <div className="mb-3 flex items-center justify-between gap-2">
+                  <Badge
                     variant="outline"
-                    className="w-full border-primary/40 bg-background/80 text-xs"
+                    className="border-primary/40 bg-primary/10 text-[11px] font-mono tracking-[0.16em] uppercase"
                   >
-                    {step.ctaLabel}
-                  </Button>
-                </Link>
-              )}
-            </CardContent>
-          </Card>
+                    {step.step}
+                  </Badge>
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <step.icon className="h-4 w-4" />
+                  </div>
+                </div>
+                <h2 className="text-sm font-semibold text-foreground">
+                  {step.title}
+                </h2>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {step.subtitle}
+                </p>
+                <ul className="mt-3 space-y-1.5">
+                  {step.items.map((item) => (
+                    <li
+                      key={item}
+                      className="flex items-start gap-2 text-xs text-muted-foreground"
+                    >
+                      <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-primary/70" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                {step.ctaHref && (
+                  <Link href={step.ctaHref} className="mt-4 inline-flex">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="w-full border-primary/40 bg-background/80 text-xs"
+                    >
+                      {step.ctaLabel}
+                    </Button>
+                  </Link>
+                )}
+              </CardContent>
+            </Card>
+          </StaggerItem>
         ))}
-      </div>
+      </StaggerChildren>
 
       {/* CTA */}
-      <Card className="mt-12 border-primary/25 bg-primary/5">
-        <CardContent className="flex flex-col items-center justify-between gap-4 p-6 text-center sm:flex-row sm:text-left">
-          <div>
-            <h2 className="text-xl font-semibold text-foreground">
-              想让顾问帮你一起走完这 5 步？
-            </h2>
-            <p className="mt-2 text-sm text-muted-foreground">
-              咨询本身完全免费，我们的收入来自向学校公开的佣金。你可以先选好学校，再决定要不要用我们的服务。
-            </p>
-          </div>
-          <Link href="/zh-CN/consultation">
-            <Button size="lg" className="text-sm">
-              立即免费咨询
-            </Button>
-          </Link>
-        </CardContent>
-      </Card>
-    </div>
+      <FadeIn delay={0.2}>
+        <Card className="mt-12 border-primary/25 bg-primary/5">
+          <CardContent className="flex flex-col items-center justify-between gap-4 p-6 text-center sm:flex-row sm:text-left">
+            <div>
+              <h2 className="text-xl font-semibold text-foreground">
+                想让顾问帮你一起走完这 5 步？
+              </h2>
+              <p className="mt-2 text-sm text-muted-foreground">
+                咨询本身完全免费，我们的收入来自向学校公开的佣金。你可以先选好学校，再决定要不要用我们的服务。
+              </p>
+            </div>
+            <Link href="/zh-CN/consultation">
+              <Button size="lg" className="text-sm">
+                立即免费咨询
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+      </FadeIn>
+    </PageContainer>
   );
 }

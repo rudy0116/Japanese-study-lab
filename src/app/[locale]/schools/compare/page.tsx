@@ -4,6 +4,8 @@ import { getTranslations } from "next-intl/server";
 import { getSchoolsBySlugs, getAllPublishedSchools } from "@/lib/queries/schools";
 import { ComparisonTable } from "@/components/comparison/comparison-table";
 import { ComparisonChart } from "@/components/comparison/comparison-chart";
+import { PageContainer } from "@/components/layout/page-container";
+import { PageHeader } from "@/components/layout/page-header";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -23,11 +25,8 @@ export default async function ComparePage({
   const schools = slugs.length >= 2 ? await getSchoolsBySlugs(slugs) : [];
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">{t("title")}</h1>
-        <p className="mt-2 text-muted-foreground">{t("subtitle")}</p>
-      </div>
+    <PageContainer>
+      <PageHeader title={t("title")} subtitle={t("subtitle")} />
 
       {schools.length < 2 ? (
         <div className="py-20 text-center">
@@ -42,6 +41,6 @@ export default async function ComparePage({
           <ComparisonChart schools={schools} />
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 }

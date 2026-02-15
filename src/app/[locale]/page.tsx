@@ -26,6 +26,7 @@ import {
   StaggerItem,
   MagneticButton,
   ImageMarquee,
+  DecoMarquee,
   CityShowcase,
 } from "@/components/motion";
 import { FloatingActions } from "@/components/floating-actions";
@@ -50,13 +51,7 @@ export default async function HomePage() {
       getSiteContent<FloatingBenefit[]>(CONTENT_KEYS.FLOATING_BENEFITS, DEFAULT_FLOATING_BENEFITS),
     ]);
 
-  const marqueeSchools = featuredSchools
-    .filter((s) => s.coverImage)
-    .map((s) => ({
-      slug: s.slug,
-      nameZh: s.nameZh,
-      coverImage: s.coverImage!,
-    }));
+  const marqueeSchools = featuredSchools;
 
   const values = [
     {
@@ -132,6 +127,25 @@ export default async function HomePage() {
             </div>
           </FadeIn>
         </div>
+      </section>
+
+      {/* ═══════════ Stats strip ═══════════ */}
+      <section className="px-4 py-12">
+        <FadeIn>
+          <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-8 sm:gap-16">
+            {stats.map((stat) => (
+              <div key={stat.label} className="text-center">
+                <p className="text-3xl font-bold text-primary sm:text-4xl">
+                  {stat.value}
+                  <span className="text-lg">{stat.suffix}</span>
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {stat.label}
+                </p>
+              </div>
+            ))}
+          </div>
+        </FadeIn>
       </section>
 
       {/* ═══════════ Feature Tags — bold category cards ═══════════ */}
@@ -210,6 +224,9 @@ export default async function HomePage() {
             ))}
           </StaggerChildren>
         </div>
+
+        {/* Decorative image strip */}
+        <DecoMarquee />
       </section>
 
       {/* ═══════════ How it works ═══════════ */}
@@ -325,25 +342,6 @@ export default async function HomePage() {
             </StaggerChildren>
           </div>
         </div>
-      </section>
-
-      {/* ═══════════ Stats strip ═══════════ */}
-      <section className="border-t px-4 py-12">
-        <FadeIn>
-          <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-8 sm:gap-16">
-            {stats.map((stat) => (
-              <div key={stat.label} className="text-center">
-                <p className="text-3xl font-bold text-primary sm:text-4xl">
-                  {stat.value}
-                  <span className="text-lg">{stat.suffix}</span>
-                </p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {stat.label}
-                </p>
-              </div>
-            ))}
-          </div>
-        </FadeIn>
       </section>
 
       {/* ═══════════ City Showcase ═══════════ */}

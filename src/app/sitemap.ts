@@ -49,14 +49,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  const publishedSchools = await getAllPublishedSchoolsForSitemap();
-
-  const schoolPages: MetadataRoute.Sitemap = publishedSchools.map((school) => ({
-    url: `${baseUrl}/zh-CN/schools/${school.slug}`,
-    lastModified: school.updatedAt,
-    changeFrequency: "weekly",
-    priority: 0.8,
-  }));
+  let schoolPages: MetadataRoute.Sitemap = [];
+  try {
+    const publishedSchools = await getAllPublishedSchoolsForSitemap();
+    schoolPages = publishedSchools.map((school) => ({
+      url: `${baseUrl}/zh-CN/schools/${school.slug}`,
+      lastModified: school.updatedAt,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    }));
+  } catch {
+    // 构建或运行时数据库不可用时仍返回静态页
+  }
 
   return [...staticPages, ...schoolPages];
 }

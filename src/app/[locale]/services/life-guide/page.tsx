@@ -2,6 +2,9 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { PageContainer } from "@/components/layout/page-container";
+import { PageHeader } from "@/components/layout/page-header";
+import { FadeIn } from "@/components/motion";
 import {
   ArrowLeft,
   Landmark,
@@ -120,7 +123,7 @@ const timeline = [
 
 export default function LifeGuidePage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+    <PageContainer size="md">
       <Link
         href="/zh-CN"
         className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary"
@@ -129,15 +132,11 @@ export default function LifeGuidePage() {
         返回首页
       </Link>
 
-      {/* Header */}
-      <div className="mb-12">
-        <Badge className="mb-4">免费服务</Badge>
-        <h1 className="text-3xl font-bold sm:text-4xl">日本生活落地指南</h1>
-        <p className="mt-4 text-lg text-muted-foreground">
-          到日本的第一周要办的事情特别多：住民登记、银行开户、手机卡、交通卡……
-          我们整理了一份按时间顺序排列的操作清单，让你到了之后一步步跟着做，不遗漏、不踩坑。
-        </p>
-      </div>
+      <PageHeader
+        label="免费服务"
+        title="日本生活落地指南"
+        subtitle="到日本的第一周要办的事情特别多：住民登记、银行开户、手机卡、交通卡……我们整理了一份按时间顺序排列的操作清单，让你到了之后一步步跟着做，不遗漏、不踩坑。"
+      />
 
       {/* Timeline */}
       <section className="mb-16">
@@ -146,79 +145,85 @@ export default function LifeGuidePage() {
           <div className="absolute left-5 top-0 hidden h-full w-0.5 bg-border md:block" />
 
           {timeline.map((phase, index) => (
-            <div key={index} className="relative flex gap-6">
-              {/* Icon */}
-              <div className="relative z-10 hidden shrink-0 md:block">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                  <phase.icon className="h-5 w-5" />
-                </div>
-              </div>
-
-              {/* Content */}
-              <Card className="flex-1 border bg-card">
-                <CardContent className="p-6">
-                  <Badge variant="default" className="mb-4">
-                    {phase.day}
-                  </Badge>
-                  <div className="space-y-5">
-                    {phase.tasks.map((task, i) => (
-                      <div key={i}>
-                        <h3 className="text-base font-semibold">
-                          {task.title}
-                        </h3>
-                        <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                          {task.detail}
-                        </p>
-                      </div>
-                    ))}
+            <FadeIn key={index} delay={index * 0.08}>
+              <div className="relative flex gap-6">
+                {/* Icon */}
+                <div className="relative z-10 hidden shrink-0 md:block">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                    <phase.icon className="h-5 w-5" />
                   </div>
-                </CardContent>
-              </Card>
-            </div>
+                </div>
+
+                {/* Content */}
+                <Card className="flex-1 border bg-card">
+                  <CardContent className="p-6">
+                    <Badge variant="default" className="mb-4">
+                      {phase.day}
+                    </Badge>
+                    <div className="space-y-5">
+                      {phase.tasks.map((task, i) => (
+                        <div key={i}>
+                          <h3 className="text-base font-semibold">
+                            {task.title}
+                          </h3>
+                          <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                            {task.detail}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </FadeIn>
           ))}
         </div>
       </section>
 
       {/* Packing essentials */}
-      <section className="mb-16">
-        <Card className="border-primary/20 bg-primary/5">
-          <CardContent className="p-8">
-            <h2 className="mb-6 text-xl font-bold text-primary">
-              出发前建议准备
-            </h2>
-            <div className="grid gap-x-8 gap-y-3 sm:grid-cols-2">
-              {[
-                "护照 + 在留资格认定书（原件）",
-                "入学许可书（原件）",
-                "现金（建议 5–10 万日元）",
-                "国际信用卡 / Visa 借记卡",
-                "日本 SIM 卡或随身 Wi-Fi",
-                "证件照（4cm×3cm）数张",
-                "印章（如有，可在日本刻制）",
-                "常用药品（日本买药需处方）",
-                "转换插头（日本为两孔扁插）",
-                "重要文件的电子备份",
-              ].map((item, i) => (
-                <div key={i} className="flex items-start gap-2">
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                  <span className="text-sm">{item}</span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </section>
+      <FadeIn>
+        <section className="mb-16">
+          <Card className="border-primary/20 bg-primary/5">
+            <CardContent className="p-8">
+              <h2 className="mb-6 text-xl font-bold text-primary">
+                出发前建议准备
+              </h2>
+              <div className="grid gap-x-8 gap-y-3 sm:grid-cols-2">
+                {[
+                  "护照 + 在留资格认定书（原件）",
+                  "入学许可书（原件）",
+                  "现金（建议 5–10 万日元）",
+                  "国际信用卡 / Visa 借记卡",
+                  "日本 SIM 卡或随身 Wi-Fi",
+                  "证件照（4cm×3cm）数张",
+                  "印章（如有，可在日本刻制）",
+                  "常用药品（日本买药需处方）",
+                  "转换插头（日本为两孔扁插）",
+                  "重要文件的电子备份",
+                ].map((item, i) => (
+                  <div key={i} className="flex items-start gap-2">
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                    <span className="text-sm">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+      </FadeIn>
 
       {/* CTA */}
-      <div className="text-center">
-        <h2 className="text-2xl font-bold">想获取完整落地指南？</h2>
-        <p className="mt-2 text-muted-foreground">
-          提交咨询后，顾问会根据你的目标城市提供定制版指南
-        </p>
-        <Link href="/zh-CN/consultation" className="mt-6 inline-block">
-          <Button size="lg">免费咨询</Button>
-        </Link>
-      </div>
-    </div>
+      <FadeIn delay={0.1}>
+        <div className="text-center">
+          <h2 className="text-2xl font-bold tracking-cjk-tight">想获取完整落地指南？</h2>
+          <p className="mt-2 text-muted-foreground">
+            提交咨询后，顾问会根据你的目标城市提供定制版指南
+          </p>
+          <Link href="/zh-CN/consultation" className="mt-6 inline-block">
+            <Button size="lg">免费咨询</Button>
+          </Link>
+        </div>
+      </FadeIn>
+    </PageContainer>
   );
 }
