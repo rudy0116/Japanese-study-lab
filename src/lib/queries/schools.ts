@@ -88,31 +88,36 @@ export async function getSchools(filters: SchoolFilters = {}) {
 }
 
 export async function getSchoolBySlug(slug: string) {
-  const [school] = await db
-    .select()
-    .from(schools)
-    .where(and(eq(schools.slug, slug), eq(schools.isPublished, true)));
-
-  if (!school) return null;
-
-  const [fees, courses, media] = await Promise.all([
-    db
+  try {
+    const [school] = await db
       .select()
-      .from(schoolFeeItems)
-      .where(eq(schoolFeeItems.schoolId, school.id))
-      .orderBy(asc(schoolFeeItems.displayOrder)),
-    db
-      .select()
-      .from(schoolCourses)
-      .where(eq(schoolCourses.schoolId, school.id)),
-    db
-      .select()
-      .from(schoolMedia)
-      .where(eq(schoolMedia.schoolId, school.id))
-      .orderBy(asc(schoolMedia.displayOrder)),
-  ]);
+      .from(schools)
+      .where(and(eq(schools.slug, slug), eq(schools.isPublished, true)));
 
-  return { ...school, fees, courses, media };
+    if (!school) return null;
+
+    const [fees, courses, media] = await Promise.all([
+      db
+        .select()
+        .from(schoolFeeItems)
+        .where(eq(schoolFeeItems.schoolId, school.id))
+        .orderBy(asc(schoolFeeItems.displayOrder)),
+      db
+        .select()
+        .from(schoolCourses)
+        .where(eq(schoolCourses.schoolId, school.id)),
+      db
+        .select()
+        .from(schoolMedia)
+        .where(eq(schoolMedia.schoolId, school.id))
+        .orderBy(asc(schoolMedia.displayOrder)),
+    ]);
+
+    return { ...school, fees, courses, media };
+  } catch {
+    // 部署环境 DB 未配置或连接失败时不抛错，由调用方 notFound()
+    return null;
+  }
 }
 
 export async function getSchoolsByIds(ids: number[]) {
@@ -185,8 +190,12 @@ export async function getAllPublishedSchools() {
 }
 
 export async function getAllPublishedSchoolsForSitemap() {
-  return db
-    .select({ slug: schools.slug, updatedAt: schools.updatedAt })
-    .from(schools)
-    .where(eq(schools.isPublished, true));
+  try {
+    return await db
+      .select({ slug: schools.slug, updatedAt: schools.updatedAt })
+      .from(schools)
+      .where(eq(schools.isPublished, true));
+  } catch {
+    return [];
+  }
 }
