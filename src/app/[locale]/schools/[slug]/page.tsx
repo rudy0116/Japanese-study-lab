@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getSchoolBySlug, getAllPublishedSchoolsForSitemap } from "@/lib/queries/schools";
+import { getSchoolBySlug } from "@/lib/queries/schools";
 import { FeeBreakdownTable } from "@/components/school/fee-breakdown-table";
 import { CommissionBadge } from "@/components/school/commission-badge";
 import { SchoolStats } from "@/components/school/school-stats";
@@ -13,14 +13,8 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, ArrowRight } from "lucide-react";
 import { formatJPY, SCHOOL_TYPE_LABELS } from "@/lib/utils";
 
-export async function generateStaticParams() {
-  try {
-    const list = await getAllPublishedSchoolsForSitemap();
-    return list.map((s) => ({ slug: s.slug }));
-  } catch {
-    return [];
-  }
-}
+// 学校详情依赖数据库查询，强制动态渲染，避免 DYNAMIC_SERVER_USAGE
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
