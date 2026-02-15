@@ -183,3 +183,10 @@ export async function getAllPublishedSchools() {
     .from(schools)
     .where(eq(schools.isPublished, true));
 }
+
+export async function getAllPublishedSchoolsForSitemap() {
+  return db
+    .select({ slug: schools.slug, updatedAt: schools.updatedAt })
+    .from(schools)
+    .where(eq(schools.isPublished, true));
+}

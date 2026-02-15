@@ -1,9 +1,10 @@
 import type { MetadataRoute } from "next";
+import { getAllPublishedSchoolsForSitemap } from "@/lib/queries/schools";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://example.com";
 
-  return [
+  const staticPages: MetadataRoute.Sitemap = [
     {
       url: `${baseUrl}/zh-CN`,
       lastModified: new Date(),
@@ -47,4 +48,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.5,
     },
   ];
+
+  const publishedSchools = await getAllPublishedSchoolsForSitemap();
+
+  const schoolPages: MetadataRoute.Sitemap = publishedSchools.map((school) => ({
+    url: `${baseUrl}/zh-CN/schools/${school.slug}`,
+    lastModified: school.updatedAt,
+    changeFrequency: "weekly",
+    priority: 0.8,
+  }));
+
+  return [...staticPages, ...schoolPages];
 }

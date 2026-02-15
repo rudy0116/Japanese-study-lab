@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getSchoolBySlug, getAllPublishedSchools } from "@/lib/queries/schools";
+import { getSchoolBySlug, getAllPublishedSchoolsForSitemap } from "@/lib/queries/schools";
 import { FeeBreakdownTable } from "@/components/school/fee-breakdown-table";
 import { CommissionBadge } from "@/components/school/commission-badge";
 import { SchoolStats } from "@/components/school/school-stats";
@@ -13,6 +13,11 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, ArrowRight } from "lucide-react";
 import { formatJPY, SCHOOL_TYPE_LABELS } from "@/lib/utils";
 
+export async function generateStaticParams() {
+  const schools = await getAllPublishedSchoolsForSitemap();
+  return schools.map((s) => ({ slug: s.slug }));
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -22,9 +27,57 @@ export async function generateMetadata({
   const school = await getSchoolBySlug(slug);
   if (!school) return { title: "学校未找到" };
 
+  const firstYearTotal = school.fees.reduce((sum, fee) => {
+    if (fee.period === "one_time" || fee.period === "annual") return sum + fee.amount;
+    if (fee.period === "semi_annual") return sum + fee.amount * 2;
+    if (fee.period === "monthly") return sum + fee.amount * 12;
+    return sum;
+  }, 0);
+
+  const title = `${school.nameZh}（${school.nameJa}）- ${school.prefecture || ""}${school.city || ""}日本语言学校`;
+
+  const descParts = [
+    school.descriptionZh,
+    school.prefecture && school.city ? `位于${school.prefecture}${school.city}` : null,
+    firstYearTotal > 0 ? `第一年费用${formatJPY(firstYearTotal)}` : null,
+    school.hasDormitory ? "提供宿舍" : null,
+    school.hasPartTimeSupport ? "支持打工" : null,
+  ].filter(Boolean);
+  const description = descParts.join("。").slice(0, 155);
+
+  const keywords = [
+    school.nameZh,
+    school.nameJa,
+    school.prefecture,
+    school.city,
+    "日本留学",
+    "日本语言学校",
+    "学费",
+    ...(school.tags || []),
+  ].filter(Boolean) as string[];
+
+  const schoolUrl = `/zh-CN/schools/${school.slug}`;
+
   return {
-    title: `${school.nameZh} - 学费明细与佣金公开`,
-    description: school.descriptionZh || `${school.nameZh}的详细学费信息和佣金透明数据`,
+    title,
+    description,
+    keywords,
+    openGraph: {
+      title,
+      description,
+      url: schoolUrl,
+      type: "article",
+      ...(school.coverImage ? { images: [school.coverImage] } : {}),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      ...(school.coverImage ? { images: [school.coverImage] } : {}),
+    },
+    alternates: {
+      canonical: schoolUrl,
+    },
   };
 }
 
@@ -47,13 +100,23 @@ export default async function SchoolDetailPage({
     return sum;
   }, 0);
 
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://example.com";
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "EducationalOrganization",
     name: school.nameJa,
     alternateName: school.nameZh,
+    ...(school.descriptionZh ? { description: school.descriptionZh } : {}),
+    url: `${baseUrl}/zh-CN/schools/${school.slug}`,
+    ...(school.coverImage ? { image: school.coverImage } : {}),
+    ...(school.establishedYear ? { foundingDate: String(school.establishedYear) } : {}),
+    ...(school.phone ? { telephone: school.phone } : {}),
+    ...(school.email ? { email: school.email } : {}),
+    ...(school.totalCapacity ? { numberOfStudents: school.totalCapacity } : {}),
     address: {
       "@type": "PostalAddress",
+      ...(school.addressJa ? { streetAddress: school.addressJa } : {}),
       addressLocality: school.city,
       addressRegion: school.prefecture,
       addressCountry: "JP",
@@ -69,6 +132,31 @@ export default async function SchoolDetailPage({
       : {}),
   };
 
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "首页",
+        item: `${baseUrl}/zh-CN`,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "学校列表",
+        item: `${baseUrl}/zh-CN/schools`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: school.nameZh,
+        item: `${baseUrl}/zh-CN/schools/${school.slug}`,
+      },
+    ],
+  };
+
   const consultationUrl = `/zh-CN/consultation?school=${school.slug}`;
 
   return (
@@ -76,6 +164,10 @@ export default async function SchoolDetailPage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -352,7 +444,7 @@ export default async function SchoolDetailPage({
 
             {/* CTA */}
             <div className="rounded-2xl border border-primary/30 bg-primary/5 p-8 text-center">
-              <h2 className="text-2xl font-bold">对这所学校感兴趣？</h2>
+              <h2 className="text-2xl font-bold tracking-cjk-tight">对这所学校感兴趣？</h2>
               <p className="mt-2 text-muted-foreground">
                 免费咨询，我们的顾问将在 24 小时内联系你，并一起确认礼遇内容与适用条件。
               </p>

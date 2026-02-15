@@ -26,13 +26,27 @@ const inter = Inter({
   display: "swap",
 });
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://example.com";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(baseUrl),
   title: {
     default: "日本留学透明平台 - 学费透明，佣金公开",
     template: "%s | 日本留学透明平台",
   },
   description:
     "极致透明的日本留学信息平台，公开学费明细、平台佣金，帮助中国学生做出知情决策。",
+  openGraph: {
+    siteName: "日本留学透明平台",
+    locale: "zh_CN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
+  alternates: {
+    canonical: "/",
+  },
 };
 
 export default async function LocaleLayout({
@@ -52,7 +66,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} className={`${notoSansSC.variable} ${notoSansJP.variable} ${inter.variable}`}>
-      <body className="min-h-screen font-[family-name:var(--font-noto-sc),var(--font-inter),sans-serif] antialiased">
+      <body className="min-h-screen font-sans antialiased">
         <NextIntlClientProvider messages={messages}>
           <div className="flex min-h-screen flex-col">
             <Header />
