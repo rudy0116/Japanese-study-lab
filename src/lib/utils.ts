@@ -71,6 +71,12 @@ export const SCHOOL_TYPE_LABELS: Record<string, string> = {
   prep_school: "预备校",
 };
 
+export const SCHEDULE_TYPE_LABELS: Record<string, string> = {
+  morning: "上午班",
+  afternoon: "下午班",
+  full_day: "全日制",
+};
+
 export const SCHOOL_TAGS = [
   "升学强校",
   "美术升学",

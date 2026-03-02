@@ -7,6 +7,7 @@ import { desc } from "drizzle-orm";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PublishSchoolButton } from "@/components/admin/publish-school-button";
+import { ExportSchoolsButton } from "@/components/admin/export-schools-button";
 import {
   Table,
   TableBody,
@@ -25,11 +26,17 @@ export default async function AdminSchoolsPage() {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-bold">学校管理</h1>
-        <Link href="/admin/schools/new">
-          <Button>添加学校</Button>
-        </Link>
+        <div className="flex flex-wrap items-center gap-2">
+          <ExportSchoolsButton />
+          <Link href="/admin/schools/upload">
+            <Button variant="outline">一键上传 Excel</Button>
+          </Link>
+          <Link href="/admin/schools/new">
+            <Button>添加学校</Button>
+          </Link>
+        </div>
       </div>
 
       <div className="rounded-lg border">

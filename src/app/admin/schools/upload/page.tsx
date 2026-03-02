@@ -1,10 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Upload, FileSpreadsheet, CheckCircle2, XCircle, Loader2 } from "lucide-react";
+import {
+  Upload,
+  FileSpreadsheet,
+  CheckCircle2,
+  XCircle,
+  Loader2,
+  ArrowLeft,
+} from "lucide-react";
 
 interface UploadResult {
   message: string;
@@ -18,8 +25,7 @@ interface UploadResult {
   };
 }
 
-export default function UploadSchoolsPage() {
-  const t = useTranslations();
+export default function AdminUploadSchoolsPage() {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [result, setResult] = useState<UploadResult | null>(null);
@@ -55,6 +61,7 @@ export default function UploadSchoolsPage() {
     try {
       const formData = new FormData();
       formData.append("file", file);
+      formData.append("publish", "0"); // 默认导入为草稿
 
       const response = await fetch("/api/admin/upload-schools", {
         method: "POST",
@@ -68,8 +75,8 @@ export default function UploadSchoolsPage() {
       }
 
       setResult(data);
-    } catch (err: any) {
-      setError(err.message || "上传失败，请重试");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "上传失败，请重试");
     } finally {
       setUploading(false);
     }
@@ -77,10 +84,20 @@ export default function UploadSchoolsPage() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mb-6 flex items-center gap-4">
+        <Link
+          href="/admin/schools"
+          className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          返回学校管理
+        </Link>
+      </div>
+
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">批量上传学校数据</h1>
+        <h1 className="text-3xl font-bold">一键上传 Excel</h1>
         <p className="mt-2 text-muted-foreground">
-          上传 Excel 文件，一键导入或更新学校信息
+          上传 Excel 文件，批量导入或更新学校信息（导入后为草稿，可在学校列表中手动公开）
         </p>
       </div>
 
@@ -92,7 +109,6 @@ export default function UploadSchoolsPage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* 文件选择 */}
           <div className="space-y-2">
             <label className="text-sm font-medium">选择文件</label>
             <div className="flex items-center gap-4">
@@ -111,7 +127,6 @@ export default function UploadSchoolsPage() {
             )}
           </div>
 
-          {/* 错误提示 */}
           {error && (
             <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4">
               <div className="flex items-center gap-2 text-destructive">
@@ -122,7 +137,6 @@ export default function UploadSchoolsPage() {
             </div>
           )}
 
-          {/* 上传按钮 */}
           <Button
             onClick={handleUpload}
             disabled={!file || uploading}
@@ -142,7 +156,6 @@ export default function UploadSchoolsPage() {
             )}
           </Button>
 
-          {/* 结果展示 */}
           {result && (
             <div className="space-y-4">
               <div className="rounded-lg border border-primary/25 bg-primary/5 p-4">
@@ -151,7 +164,6 @@ export default function UploadSchoolsPage() {
                   <span className="font-medium">{result.message}</span>
                 </div>
               </div>
-
               <div className="grid gap-4 sm:grid-cols-5">
                 <div className="rounded-lg border bg-background p-4">
                   <div className="text-2xl font-bold text-green-600">
@@ -184,7 +196,6 @@ export default function UploadSchoolsPage() {
                   <div className="text-sm text-muted-foreground">费用导入</div>
                 </div>
               </div>
-
               {result.results.errors.length > 0 && (
                 <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4">
                   <div className="mb-2 font-medium text-destructive">错误详情</div>
@@ -200,37 +211,20 @@ export default function UploadSchoolsPage() {
             </div>
           )}
 
-          {/* 下载模板 */}
           <div className="flex items-center justify-between rounded-lg border bg-muted/50 p-4">
             <div>
-              <h3 className="font-semibold">需要模板文件？</h3>
+              <h3 className="font-semibold">需要模板？</h3>
               <p className="text-sm text-muted-foreground">
-                下载 Excel 模板，按照格式填写后上传
+                可先下载模板填写，或使用「一键下载 Excel」导出的文件编辑后上传
               </p>
             </div>
             <Button
               variant="outline"
-              onClick={() => {
-                window.open("/api/admin/download-template", "_blank");
-              }}
+              onClick={() => window.open("/api/admin/download-template", "_blank")}
             >
               <FileSpreadsheet className="mr-2 h-4 w-4" />
               下载模板
             </Button>
-          </div>
-
-          {/* 使用说明 */}
-          <div className="rounded-lg border bg-muted/50 p-4">
-            <h3 className="mb-2 font-semibold">使用说明</h3>
-            <ul className="space-y-1 text-sm text-muted-foreground">
-              <li>• Excel 支持三个工作表：学校数据、课程数据、费用数据</li>
-              <li>• 仅"学校数据"工作表为必需，课程和费用工作表可选</li>
-              <li>• 课程和费用通过"学校slug"匹配学校，导入时会替换该校旧数据</li>
-              <li>• 学校数据必须包含以下列：中文名称、日文名称</li>
-              <li>• 如果学校已存在（根据 slug 匹配），将自动更新</li>
-              <li>• 支持的文件格式：.xlsx, .xls</li>
-              <li>• 比例字段请填写百分比（如：30%），布尔字段填"是"或"否"</li>
-            </ul>
           </div>
         </CardContent>
       </Card>
